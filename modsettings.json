@@ -18,7 +18,7 @@
         },
         {
             "Name": "CenterPositioning",
-            "Description": "",
+            "Description": "Horse's \"center\" position and camera angle where it will be set to that position. ",
             "IsAdvanced": false,
             "Keys": [
                 {
@@ -33,7 +33,7 @@
                 {
                     "Min": -90.0,
                     "Max": 0.0,
-                    "Value": 0.0,
+                    "Value": -15.0,
                     "Name": "HorseCenterAngle",
                     "Description": "Camera angle where horse will be positioned at it's \"center\" position. 0 = middle of screen.",
                     "$version": "v1",
@@ -44,13 +44,13 @@
         },
         {
             "Name": "DownPositioning",
-            "Description": null,
+            "Description": "Horse's \"down\" position and camera angle where it will be set to that position. ",
             "IsAdvanced": false,
             "Keys": [
                 {
                     "Min": -300.0,
                     "Max": 300.0,
-                    "Value": 0.0,
+                    "Value": -300.0,
                     "Name": "HorseDownPosition",
                     "Description": "Horse's position when at the \"down position. -300 = bottom of screen.",
                     "$version": "v1",
@@ -59,7 +59,7 @@
                 {
                     "Min": 0.0,
                     "Max": 90.0,
-                    "Value": 90.0,
+                    "Value": 40.0,
                     "Name": "HorseDownAngle",
                     "Description": "Cameraangle where horse will be positioned at the \"bottom\" position. 90 = looking straight up",
                     "$version": "v1",
@@ -70,7 +70,7 @@
         },
         {
             "Name": "HorizontalPositioning",
-            "Description": null,
+            "Description": "Move horse left/right.",
             "IsAdvanced": false,
             "Keys": [
                 {
