@@ -15,17 +15,15 @@ namespace BetterRidingViewMod
 {
     public class BetterRidingView : MonoBehaviour
     {
-        public static bool stay_down_when_looking_up = true;
-        public static float up_angle_offset = 0; // 40
-        public static float straight_angle_offset = 0; // 15
-        const float UP_ANGLE = 90;
-        const float STRAIGHT_ANGLE = 0;
-
-        const float UP_HORSE_POS = 300; // 293
-        const float STRAIGHT_HORSE_POS = 0;
+        public static bool dynamic_horse_positioning = true;
+        public static float horse_center_position = 0;
+        public static float horse_center_angle = 0; // 15
+        public static float horse_down_position = 0;
+        public static float horse_down_angle = 0; // 40
+        public static float horse_horizontal_position = 0;
         float camera_angle_x = 0;
         float normalized_angle_x = 0;
-        float horse_texture_offset = 0;
+        float horse_texture_offset_y = 0;
         private static Mod mod;
         Rect screenRect;
         readonly float nativeScreenHeight = 200;
@@ -43,9 +41,12 @@ namespace BetterRidingViewMod
         }
 
         static void LoadSettings(ModSettings modSettings, ModSettingsChange change){
-            stay_down_when_looking_up = modSettings.GetBool("BetterRidingViewSettings", "StayDownWhenLookingUp");
-            up_angle_offset = modSettings.GetFloat("BetterRidingViewSettings", "UpAngleOffset");
-            straight_angle_offset = modSettings.GetFloat("BetterRidingViewSettings", "StraightAngleOffset");
+            dynamic_horse_positioning = modSettings.GetBool("DynamicHorsePositioning", "DynamicHorsePositioning");
+            horse_center_position = modSettings.GetFloat("CenterPositioning", "HorseCenterPosition");
+            horse_center_angle = modSettings.GetFloat("CenterPositioning", "HorseCenterAngle");
+            horse_down_position = modSettings.GetFloat("DownPositioning", "HorseDownPosition");
+            horse_down_angle = modSettings.GetFloat("DownPositioning", "HorseDownAngle");
+            horse_horizontal_position = modSettings.GetFloat("HorizontalPositioning", "HorseHorizontalPosition");
         }
 
         private void Start()
@@ -63,22 +64,32 @@ namespace BetterRidingViewMod
             return min + normalized_value * (max - min);
         }
 
-    float NormalizeTo180Angle(float angle)
-    {
-        if (angle > 180)
-            angle -= 360;
-        return angle;
-    }
+        public float NormalizeTo180Angle(float angle)
+        {
+            if (angle > 180)
+                angle -= 360;
+            return angle;
+        }
 
         private void Update(){
-            if (!stay_down_when_looking_up){
-                horse_texture_offset = STRAIGHT_ANGLE + straight_angle_offset;
+            if (GameManager.Instance.TransportManager.IsOnFoot){
                 return;
             }
-            camera_angle_x = NormalizeTo180Angle(GameManager.Instance.MainCamera.transform.eulerAngles.x);
-            if (camera_angle_x > 0) {camera_angle_x = 0;}
-            normalized_angle_x = NormalizeValue(camera_angle_x, STRAIGHT_ANGLE + straight_angle_offset, -(UP_ANGLE + up_angle_offset));
-            horse_texture_offset = GetValueFromNormalize(normalized_angle_x, STRAIGHT_HORSE_POS, UP_HORSE_POS);
+            if (!dynamic_horse_positioning){
+                horse_texture_offset_y = horse_center_position;
+                // Debug.Log($"horse_texture_offset_y: {horse_texture_offset_y}");
+                return;
+            }
+            camera_angle_x = -NormalizeTo180Angle(GameManager.Instance.MainCamera.transform.eulerAngles.x);
+            camera_angle_x = Mathf.Clamp(camera_angle_x, horse_center_angle, horse_down_angle);
+            
+            normalized_angle_x = NormalizeValue(camera_angle_x, horse_center_angle, horse_down_angle);
+            
+            // Debug.Log($"camera_angle_x: {camera_angle_x} ---- normalized_angle_x: {normalized_angle_x}");
+
+            horse_texture_offset_y = GetValueFromNormalize(normalized_angle_x, horse_center_position, horse_down_position);
+
+            // Debug.Log($"horse_texture_offset_y: {horse_texture_offset_y}");
         }
     
         void OnGUI()
@@ -108,12 +119,17 @@ namespace BetterRidingViewMod
                         horseOffsetHeight = (int)DaggerfallUI.Instance.DaggerfallHUD.LargeHUD.ScreenHeight;
                     }
 
-                    horseOffsetHeight -= horse_texture_offset;
+                    float horseOffsetWidth = 0;
+
+                    horseOffsetHeight += horse_texture_offset_y;
+                    horseOffsetWidth += horse_horizontal_position;
 
                     // Calculate position for horse texture and draw it.
                     Rect pos = new Rect(
-                                    screenRect.x + screenRect.width / 2f - (GameManager.Instance.TransportManager.RidingTexture.width * horseScaleX) / 2f,
+                                    screenRect.x + screenRect.width / 2f - (GameManager.Instance.TransportManager.RidingTexture.width * horseScaleX) / 2f + horseOffsetWidth,
+                                    //
                                     screenRect.y + screenRect.height - (GameManager.Instance.TransportManager.RidingTexture.height * horseScaleY) - horseOffsetHeight,
+                                    //
                                     GameManager.Instance.TransportManager.RidingTexture.width * horseScaleX,
                                     GameManager.Instance.TransportManager.RidingTexture.height * horseScaleY);
                     DaggerfallUI.DrawTexture(pos, GameManager.Instance.TransportManager.RidingTexture.texture, ScaleMode.StretchToFill, true, GameManager.Instance.TransportManager.Tint);
