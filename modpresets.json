@@ -1,0 +1,30 @@
+[
+    {
+        "Title": "Default",
+        "Author": "Arshvir Goraya",
+        "Description": "Default",
+        "SettingsVersion": "1.0.0",
+        "Values": {
+            "BetterRidingViewSettings": {
+                "StayDownWhenLookingUp": "True",
+                "StraightAngleOffset": "0",
+                "UpAngleOffset": "0"
+            }
+        },
+        "$version": "v1"
+    },
+    {
+        "Title": "Immersive",
+        "Author": "Arshvir Goraya",
+        "Description": "Up and Straight angle positions that are the most immersive (to me).",
+        "SettingsVersion": "1.0.0",
+        "Values": {
+            "BetterRidingViewSettings": {
+                "StayDownWhenLookingUp": "True",
+                "StraightAngleOffset": "15",
+                "UpAngleOffset": "40"
+            }
+        },
+        "$version": "v1"
+    }
+]

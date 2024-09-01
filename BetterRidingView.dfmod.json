@@ -7,6 +7,8 @@
     "ModDescription": "When looking up, horse's head will not move up with you. ",
     "GUID": "ec12235e-22f9-41b1-90b8-1cf4409fdb6e",
     "Files": [
-        "Assets/Game/Mods/BetterRidingView/Scripts/BetterRidingView.cs"
+        "Assets/Game/Mods/BetterRidingView/Scripts/BetterRidingView.cs",
+        "Assets/Game/Mods/BetterRidingView/modpresets.json",
+        "Assets/Game/Mods/BetterRidingView/modsettings.json"
     ]
 }

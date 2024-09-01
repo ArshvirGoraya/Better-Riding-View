@@ -9,25 +9,23 @@ using UnityEngine;
 using DaggerfallWorkshop.Game;
 using DaggerfallWorkshop.Game.Utility.ModSupport;
 using DaggerfallWorkshop;
+using DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings;
 
 namespace BetterRidingViewMod
 {
     public class BetterRidingView : MonoBehaviour
     {
-        public float straight_angle_offset = 0; // 15
-        public float up_angle_offset = 0; // 40
-
-        const float STRAIGHT_ANGLE = 0;
+        public static bool stay_down_when_looking_up = true;
+        public static float up_angle_offset = 0; // 40
+        public static float straight_angle_offset = 0; // 15
         const float UP_ANGLE = 90;
+        const float STRAIGHT_ANGLE = 0;
 
-        const float STRAIGHT_HORSE_POS = 0;
         const float UP_HORSE_POS = 300; // 293
-
+        const float STRAIGHT_HORSE_POS = 0;
         float camera_angle_x = 0;
         float normalized_angle_x = 0;
-
         float horse_texture_offset = 0;
-
         private static Mod mod;
         Rect screenRect;
         readonly float nativeScreenHeight = 200;
@@ -39,6 +37,15 @@ namespace BetterRidingViewMod
             var go = new GameObject(mod.Title);
             go.AddComponent<BetterRidingView>();
             mod.IsReady = true;
+
+            mod.LoadSettingsCallback = LoadSettings;
+            mod.LoadSettings();
+        }
+
+        static void LoadSettings(ModSettings modSettings, ModSettingsChange change){
+            stay_down_when_looking_up = modSettings.GetBool("BetterRidingViewSettings", "StayDownWhenLookingUp");
+            up_angle_offset = modSettings.GetFloat("BetterRidingViewSettings", "UpAngleOffset");
+            straight_angle_offset = modSettings.GetFloat("BetterRidingViewSettings", "StraightAngleOffset");
         }
 
         private void Start()
@@ -64,54 +71,54 @@ namespace BetterRidingViewMod
     }
 
         private void Update(){
+            if (!stay_down_when_looking_up){
+                horse_texture_offset = STRAIGHT_ANGLE + straight_angle_offset;
+                return;
+            }
             camera_angle_x = NormalizeTo180Angle(GameManager.Instance.MainCamera.transform.eulerAngles.x);
             if (camera_angle_x > 0) {camera_angle_x = 0;}
-            Debug.Log($"camera_angle_x: {camera_angle_x}");
-
             normalized_angle_x = NormalizeValue(camera_angle_x, STRAIGHT_ANGLE + straight_angle_offset, -(UP_ANGLE + up_angle_offset));
             horse_texture_offset = GetValueFromNormalize(normalized_angle_x, STRAIGHT_HORSE_POS, UP_HORSE_POS);
         }
     
         void OnGUI()
-            {                
-                if (DaggerfallUI.Instance.CustomScreenRect != null)
-                    screenRect = DaggerfallUI.Instance.CustomScreenRect.Value;
-                else
-                    screenRect = new Rect(0, 0, Screen.width, Screen.height);
+        {                
+            if (DaggerfallUI.Instance.CustomScreenRect != null)
+                screenRect = DaggerfallUI.Instance.CustomScreenRect.Value;
+            else
+                screenRect = new Rect(0, 0, Screen.width, Screen.height);
 
-                if (Event.current.type.Equals(EventType.Repaint) && !GameManager.IsGamePaused)
+            if (Event.current.type.Equals(EventType.Repaint) && !GameManager.IsGamePaused)
+            {
+                if ((GameManager.Instance.TransportManager.TransportMode == TransportModes.Horse || GameManager.Instance.TransportManager.TransportMode == TransportModes.Cart) && GameManager.Instance.TransportManager.RidingTexture.texture != null)
                 {
-                    if ((GameManager.Instance.TransportManager.TransportMode == TransportModes.Horse || GameManager.Instance.TransportManager.TransportMode == TransportModes.Cart) && GameManager.Instance.TransportManager.RidingTexture.texture != null)
+                    // Draw horse texture behind other HUD elements & weapons.
+                    GUI.depth = 2;
+                    // Get horse texture scaling factor. (base on height to avoid aspect ratio issues like fat horses)
+                    float horseScaleY = (float)screenRect.height / nativeScreenHeight;
+                    float horseScaleX = horseScaleY * TransportManager.ScaleFactorX;
+
+                    // Allow horse to be offset when large HUD enabled
+                    // This is enabled by default to match classic but can be toggled for either docked/undocked large HUD
+                    float horseOffsetHeight = 0;
+                    if (DaggerfallUI.Instance.DaggerfallHUD != null &&
+                        DaggerfallUnity.Settings.LargeHUD &&
+                        DaggerfallUnity.Settings.LargeHUDOffsetHorse)
                     {
-                        // Draw horse texture behind other HUD elements & weapons.
-                        GUI.depth = 2;
-                        // Get horse texture scaling factor. (base on height to avoid aspect ratio issues like fat horses)
-                        float horseScaleY = (float)screenRect.height / nativeScreenHeight;
-                        float horseScaleX = horseScaleY * TransportManager.ScaleFactorX;
-
-                        // Allow horse to be offset when large HUD enabled
-                        // This is enabled by default to match classic but can be toggled for either docked/undocked large HUD
-                        float horseOffsetHeight = 0;
-                        if (DaggerfallUI.Instance.DaggerfallHUD != null &&
-                            DaggerfallUnity.Settings.LargeHUD &&
-                            DaggerfallUnity.Settings.LargeHUDOffsetHorse)
-                        {
-                            horseOffsetHeight = (int)DaggerfallUI.Instance.DaggerfallHUD.LargeHUD.ScreenHeight;
-                        }
-
-                        horseOffsetHeight -= horse_texture_offset;
-
-                        // Calculate position for horse texture and draw it.
-                        Rect pos = new Rect(
-                                        screenRect.x + screenRect.width / 2f - (GameManager.Instance.TransportManager.RidingTexture.width * horseScaleX) / 2f,
-                                        screenRect.y + screenRect.height - (GameManager.Instance.TransportManager.RidingTexture.height * horseScaleY) - horseOffsetHeight,
-                                        GameManager.Instance.TransportManager.RidingTexture.width * horseScaleX,
-                                        GameManager.Instance.TransportManager.RidingTexture.height * horseScaleY);
-                        DaggerfallUI.DrawTexture(pos, GameManager.Instance.TransportManager.RidingTexture.texture, ScaleMode.StretchToFill, true, GameManager.Instance.TransportManager.Tint);
+                        horseOffsetHeight = (int)DaggerfallUI.Instance.DaggerfallHUD.LargeHUD.ScreenHeight;
                     }
+
+                    horseOffsetHeight -= horse_texture_offset;
+
+                    // Calculate position for horse texture and draw it.
+                    Rect pos = new Rect(
+                                    screenRect.x + screenRect.width / 2f - (GameManager.Instance.TransportManager.RidingTexture.width * horseScaleX) / 2f,
+                                    screenRect.y + screenRect.height - (GameManager.Instance.TransportManager.RidingTexture.height * horseScaleY) - horseOffsetHeight,
+                                    GameManager.Instance.TransportManager.RidingTexture.width * horseScaleX,
+                                    GameManager.Instance.TransportManager.RidingTexture.height * horseScaleY);
+                    DaggerfallUI.DrawTexture(pos, GameManager.Instance.TransportManager.RidingTexture.texture, ScaleMode.StretchToFill, true, GameManager.Instance.TransportManager.Tint);
                 }
             }
-    
-    
+        }
     }
 }

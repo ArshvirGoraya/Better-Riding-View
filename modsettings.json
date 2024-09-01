@@ -1,0 +1,38 @@
+{
+    "Version": "1.0.0",
+    "Sections": [
+        {
+            "Name": "BetterRidingViewSettings",
+            "Description": "Settings for the Better Riding View Mod.",
+            "IsAdvanced": false,
+            "Keys": [
+                {
+                    "Value": true,
+                    "Name": "StayDownWhenLookingUp",
+                    "Description": "Without this, the UpAngleOffset is useless as the horse's position will not dynamically change down. StraightAngleOffset will still control where the horses's default position is at.",
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.ToggleKey"
+                },
+                {
+                    "Min": -90.0,
+                    "Max": 90.0,
+                    "Value": 0.0,
+                    "Name": "UpAngleOffset",
+                    "Description": "Offset the Up Angle: what is considered looking straight up to the sky, where the horse will be positioned most towards the bottom. ",
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderFloatKey"
+                },
+                {
+                    "Min": -90.0,
+                    "Max": 300.0,
+                    "Value": 0.0,
+                    "Name": "StraightAngleOffset",
+                    "Description": "Offset the Straight Angle: what is considered looking straight ahead, where the horse will be positioned centered on the screen, as usual.",
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderFloatKey"
+                }
+            ],
+            "$version": "v1"
+        }
+    ]
+}
