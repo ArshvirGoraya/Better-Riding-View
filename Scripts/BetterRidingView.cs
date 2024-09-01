@@ -14,11 +14,14 @@ namespace BetterRidingViewMod
 {
     public class BetterRidingView : MonoBehaviour
     {
-        const float STRAIGHT_ANGLE = 360;
-        const float UP_ANGLE = 270;
+        public float straight_angle_offset = 0; // 15
+        public float up_angle_offset = 0; // 40
 
-        const float STRAIGHT_HORSE_OFFSET = 0;
-        const float UP_HORSE_OFFSET = 300; // 293
+        const float STRAIGHT_ANGLE = 0;
+        const float UP_ANGLE = 90;
+
+        const float STRAIGHT_HORSE_POS = 0;
+        const float UP_HORSE_POS = 300; // 293
 
         float camera_angle_x = 0;
         float normalized_angle_x = 0;
@@ -29,8 +32,6 @@ namespace BetterRidingViewMod
         Rect screenRect;
         readonly float nativeScreenHeight = 200;
         
-
-
         [Invoke(StateManager.StateTypes.Start, 0)]
         public static void Init(InitParams initParams)
         {
@@ -55,17 +56,20 @@ namespace BetterRidingViewMod
             return min + normalized_value * (max - min);
         }
 
-        // private void DrawHorseTexture(float horse_texture_offset = 0){
-        //     DaggerfallUI.DrawTexture();
-        // }
+    float NormalizeTo180Angle(float angle)
+    {
+        if (angle > 180)
+            angle -= 360;
+        return angle;
+    }
 
         private void Update(){
-            camera_angle_x = GameManager.Instance.MainCamera.transform.eulerAngles.x;
-            if (camera_angle_x < UP_ANGLE){camera_angle_x = 360;}
+            camera_angle_x = NormalizeTo180Angle(GameManager.Instance.MainCamera.transform.eulerAngles.x);
+            if (camera_angle_x > 0) {camera_angle_x = 0;}
+            Debug.Log($"camera_angle_x: {camera_angle_x}");
 
-            normalized_angle_x = NormalizeValue(camera_angle_x, STRAIGHT_ANGLE, UP_ANGLE);
-            
-            horse_texture_offset = GetValueFromNormalize(normalized_angle_x, STRAIGHT_HORSE_OFFSET, UP_HORSE_OFFSET);
+            normalized_angle_x = NormalizeValue(camera_angle_x, STRAIGHT_ANGLE + straight_angle_offset, -(UP_ANGLE + up_angle_offset));
+            horse_texture_offset = GetValueFromNormalize(normalized_angle_x, STRAIGHT_HORSE_POS, UP_HORSE_POS);
         }
     
         void OnGUI()
