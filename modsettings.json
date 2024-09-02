@@ -12,6 +12,13 @@
                     "Description": "Without this, the horse will just be positioned at the \"center angle\" you choose in Horse Position section.  ",
                     "$version": "v1",
                     "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.ToggleKey"
+                },
+                {
+                    "Value": true,
+                    "Name": "DynamicHorseJumping",
+                    "Description": "Move Horse upwards during apex of jump and down when on ground.",
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.ToggleKey"
                 }
             ],
             "$version": "v1"

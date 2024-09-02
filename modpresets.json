@@ -6,7 +6,8 @@
         "SettingsVersion": "1.0.0",
         "Values": {
             "DynamicHorsePositioning": {
-                "DynamicHorsePositioning": "True"
+                "DynamicHorsePositioning": "True",
+                "DynamicHorseJumping": "True"
             },
             "CenterPositioning": {
                 "HorseCenterPosition": "0",
@@ -29,7 +30,8 @@
         "SettingsVersion": "1.0.0",
         "Values": {
             "DynamicHorsePositioning": {
-                "DynamicHorsePositioning": "True"
+                "DynamicHorsePositioning": "True",
+                "DynamicHorseJumping": "True"
             },
             "CenterPositioning": {
                 "HorseCenterPosition": "0",
@@ -52,7 +54,8 @@
         "SettingsVersion": "1.0.0",
         "Values": {
             "DynamicHorsePositioning": {
-                "DynamicHorsePositioning": "True"
+                "DynamicHorsePositioning": "True",
+                "DynamicHorseJumping": "True"
             },
             "CenterPositioning": {
                 "HorseCenterPosition": "-60",
@@ -75,7 +78,8 @@
         "SettingsVersion": "1.0.0",
         "Values": {
             "DynamicHorsePositioning": {
-                "DynamicHorsePositioning": "True"
+                "DynamicHorsePositioning": "True",
+                "DynamicHorseJumping": "True"
             },
             "CenterPositioning": {
                 "HorseCenterPosition": "0",

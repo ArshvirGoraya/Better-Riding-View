@@ -13,20 +13,33 @@ using DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings;
 using DaggerfallWorkshop.Game.UserInterface;
 using System.Collections.Generic;
 using System;
+using __ExternalAssets;
 
 namespace BetterRidingViewMod
 {
     public class BetterRidingView : MonoBehaviour
     {
         public static bool dynamic_horse_positioning = true;
+        public static bool dynamic_horse_jumping = true;
         public static float horse_center_position = 0;
         public static float horse_center_angle = 0; // -15
         public static float horse_down_position = 0;
         public static float horse_down_angle = 0; // 40
         public static float horse_horizontal_position = 0;
+
+        public float tween_target = 0;
+        public float tween_start = 0;
+        public bool tweening = false; 
+        public float current_tween_value = 0;
+
+
+        const float TWEEN_TOTAL_TIME = 0.5f; // SECONDS
+        float tween_elapsed_time = 0;
+
+        public bool on_ground = true;
         float camera_angle_x = 0;
         float normalized_angle_x = 0;
-        float horse_texture_offset_y = 0;
+        public float horse_texture_offset_y = 0;
 ////////////////////////////////////////////////////////////////////////////////
         private static Mod mod;
         Rect screenRect;
@@ -47,6 +60,7 @@ namespace BetterRidingViewMod
         // * Raised when user changes mod settings.
         static void LoadSettings(ModSettings modSettings, ModSettingsChange change){
             dynamic_horse_positioning = modSettings.GetBool("DynamicHorsePositioning", "DynamicHorsePositioning");
+            dynamic_horse_jumping = modSettings.GetBool("DynamicHorsePositioning", "DynamicHorseJumping");
             horse_center_position = modSettings.GetFloat("CenterPositioning", "HorseCenterPosition");
             horse_center_angle = modSettings.GetFloat("CenterPositioning", "HorseCenterAngle");
             horse_down_position = modSettings.GetFloat("DownPositioning", "HorseDownPosition");
@@ -72,6 +86,13 @@ namespace BetterRidingViewMod
             return angle;
         }
 
+        public float GetHorseTextureOffset(){
+            camera_angle_x = -NormalizeTo180Angle(GameManager.Instance.MainCamera.transform.eulerAngles.x);
+            camera_angle_x = Mathf.Clamp(camera_angle_x, horse_center_angle, horse_down_angle);
+            normalized_angle_x = NormalizeValue(camera_angle_x, horse_center_angle, horse_down_angle);
+            return GetValueFromNormalize(normalized_angle_x, horse_center_position, horse_down_position);
+        }
+
         private void Update(){
             if (!GameManager.Instance.StateManager.GameInProgress){
                 return;
@@ -83,10 +104,59 @@ namespace BetterRidingViewMod
                 horse_texture_offset_y = horse_center_position;
                 return;
             }
-            camera_angle_x = -NormalizeTo180Angle(GameManager.Instance.MainCamera.transform.eulerAngles.x);
-            camera_angle_x = Mathf.Clamp(camera_angle_x, horse_center_angle, horse_down_angle);
-            normalized_angle_x = NormalizeValue(camera_angle_x, horse_center_angle, horse_down_angle);
-            horse_texture_offset_y = GetValueFromNormalize(normalized_angle_x, horse_center_position, horse_down_position);
+            if (!tweening){
+                horse_texture_offset_y = GetHorseTextureOffset();
+            }else{
+                horse_texture_offset_y = current_tween_value;
+            }
+            
+            // Time.deltaTime;
+            if (dynamic_horse_jumping){
+                if (on_ground){
+                    if ((GameManager.Instance.AcrobatMotor.Jumping || GameManager.Instance.AcrobatMotor.Falling)){
+                        tweening = true;
+                        on_ground = false;
+                        Debug.Log($"off ground!!!");
+                        tween_start = horse_texture_offset_y;
+                        tween_target = Mathf.Min(horse_center_position, horse_texture_offset_y + 50);
+                        iTween.StopByName("BetterRidingViewMoveDown");
+                        iTween.StopByName("BetterRidingViewMoveUp");
+                        iTween.ValueTo(gameObject, iTween.Hash(
+                            "name", "BetterRidingViewMoveUp",
+                            "from", tween_start,
+                            "to", tween_target,
+                            "time", 0.5f,
+                            "onupdate", "JumpingTweenUpdate",
+                            "easetype", iTween.EaseType.easeInOutSine
+                        ));
+                    }
+                }else{
+                    if (!(GameManager.Instance.AcrobatMotor.Jumping || GameManager.Instance.AcrobatMotor.Falling)){
+                        tween_start = current_tween_value;
+                        tween_target = GetHorseTextureOffset();
+                        iTween.StopByName("BetterRidingViewMoveDown");
+                        iTween.StopByName("BetterRidingViewMoveUp");
+                        iTween.ValueTo(gameObject, iTween.Hash(
+                            "name", "BetterRidingViewMoveDown",
+                            "from", tween_start,
+                            "to", tween_target,
+                            "time", 0.5f,
+                            "onupdate", "JumpingTweenUpdate",
+                            "easetype", iTween.EaseType.easeOutSine,
+                            "oncomplete", "OnTweenComplete"
+                        ));
+                        Debug.Log($"on ground");
+                        on_ground = true;
+                    }
+                }
+            }
+        }
+
+        void JumpingTweenUpdate(float newValue){
+            current_tween_value = newValue;
+        }
+        void OnTweenComplete(){
+            tweening = false;
         }
 
         // * Mimics the OnGUI method inside of TransportManager.cs, with some additions to allow dynamic horse positioning.
