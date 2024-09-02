@@ -14,6 +14,7 @@ using DaggerfallWorkshop.Game.UserInterface;
 using System.Collections.Generic;
 using System;
 using __ExternalAssets;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace BetterRidingViewMod
 {
@@ -26,17 +27,20 @@ namespace BetterRidingViewMod
         public static float horse_down_position = 0;
         public static float horse_down_angle = 0; // 40
         public static float horse_horizontal_position = 0;
-
+        public enum HorseTweenType
+        {
+            None,
+            TweenUp,
+            TweenDown,
+        }
+        public HorseTweenType horse_tween_type = HorseTweenType.None;
         public float tween_target = 0;
         public float tween_start = 0;
-        public bool tweening = false; 
         public float current_tween_value = 0;
-
-
         const float TWEEN_TOTAL_TIME = 0.5f; // SECONDS
         float tween_elapsed_time = 0;
-
         public bool on_ground = true;
+
         float camera_angle_x = 0;
         float normalized_angle_x = 0;
         public float horse_texture_offset_y = 0;
@@ -104,59 +108,74 @@ namespace BetterRidingViewMod
                 horse_texture_offset_y = horse_center_position;
                 return;
             }
-            if (!tweening){
-                horse_texture_offset_y = GetHorseTextureOffset();
-            }else{
-                horse_texture_offset_y = current_tween_value;
-            }
-            
-            // Time.deltaTime;
+
+            // * Start Jump Tween?
             if (dynamic_horse_jumping){
                 if (on_ground){
                     if ((GameManager.Instance.AcrobatMotor.Jumping || GameManager.Instance.AcrobatMotor.Falling)){
-                        tweening = true;
-                        on_ground = false;
+                        // * Just Jumped
                         Debug.Log($"off ground!!!");
-                        tween_start = horse_texture_offset_y;
-                        tween_target = Mathf.Min(horse_center_position, horse_texture_offset_y + 50);
-                        iTween.StopByName("BetterRidingViewMoveDown");
-                        iTween.StopByName("BetterRidingViewMoveUp");
-                        iTween.ValueTo(gameObject, iTween.Hash(
-                            "name", "BetterRidingViewMoveUp",
-                            "from", tween_start,
-                            "to", tween_target,
-                            "time", 0.5f,
-                            "onupdate", "JumpingTweenUpdate",
-                            "easetype", iTween.EaseType.easeInOutSine
-                        ));
+                        horse_tween_type = HorseTweenType.TweenUp;
+                        on_ground = false;
+                        // * Start Up Tween:
+                        tween_elapsed_time = 0;
                     }
                 }else{
                     if (!(GameManager.Instance.AcrobatMotor.Jumping || GameManager.Instance.AcrobatMotor.Falling)){
-                        tween_start = current_tween_value;
-                        tween_target = GetHorseTextureOffset();
-                        iTween.StopByName("BetterRidingViewMoveDown");
-                        iTween.StopByName("BetterRidingViewMoveUp");
-                        iTween.ValueTo(gameObject, iTween.Hash(
-                            "name", "BetterRidingViewMoveDown",
-                            "from", tween_start,
-                            "to", tween_target,
-                            "time", 0.5f,
-                            "onupdate", "JumpingTweenUpdate",
-                            "easetype", iTween.EaseType.easeOutSine,
-                            "oncomplete", "OnTweenComplete"
-                        ));
+                        // * Landed from Jump.
                         Debug.Log($"on ground");
+                        horse_tween_type = HorseTweenType.TweenDown;
                         on_ground = true;
+                        // * Start Down Tween:
+                        tween_elapsed_time = 0;
+                    }
+                }
+            }
+
+            if (horse_tween_type == HorseTweenType.None){
+                horse_texture_offset_y = GetHorseTextureOffset();
+            }
+            else{
+                tween_elapsed_time += Time.deltaTime;
+                if (horse_tween_type == HorseTweenType.TweenUp){
+                    horse_texture_offset_y = IncrementTweenUp();
+                }else{
+                    horse_texture_offset_y = IncrementTweenDown();
+                    // * End jump easing easing.
+                    if (tween_elapsed_time >= TWEEN_TOTAL_TIME){
+                        horse_tween_type = HorseTweenType.None;
                     }
                 }
             }
         }
 
-        void JumpingTweenUpdate(float newValue){
-            current_tween_value = newValue;
+        float EaseInOutSine(float x) {
+            return -(Mathf.Cos((float)Math.PI * x - 1) / 2);
         }
-        void OnTweenComplete(){
-            tweening = false;
+        float EaseOutSine(float x) {
+            return Mathf.Sin((x * (float)Math.PI) / 2);
+        }
+
+        float IncrementTweenUp(){
+            float start_val = GetHorseTextureOffset();
+            float target_val = Mathf.Min(horse_center_position, start_val + 50);
+            current_tween_value = GetValueFromNormalize(
+                EaseOutSine(NormalizeValue(tween_elapsed_time, 0, TWEEN_TOTAL_TIME)),
+                start_val,
+                target_val
+            );
+            return current_tween_value;
+        }
+
+        float IncrementTweenDown(){
+            float start_val = current_tween_value;
+            float target_val = GetHorseTextureOffset();
+            current_tween_value = GetValueFromNormalize(
+                EaseOutSine(NormalizeValue(tween_elapsed_time, 0, TWEEN_TOTAL_TIME)),
+                start_val,
+                target_val
+            );
+            return current_tween_value;
         }
 
         // * Mimics the OnGUI method inside of TransportManager.cs, with some additions to allow dynamic horse positioning.
