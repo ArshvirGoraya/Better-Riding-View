@@ -10,6 +10,9 @@ using DaggerfallWorkshop.Game;
 using DaggerfallWorkshop.Game.Utility.ModSupport;
 using DaggerfallWorkshop;
 using DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings;
+using DaggerfallWorkshop.Game.UserInterface;
+using System.Collections.Generic;
+using System;
 
 namespace BetterRidingViewMod
 {
@@ -28,7 +31,7 @@ namespace BetterRidingViewMod
         private static Mod mod;
         Rect screenRect;
         readonly float nativeScreenHeight = 200;
-        
+
         [Invoke(StateManager.StateTypes.Start, 0)]
         public static void Init(InitParams initParams)
         {
@@ -68,7 +71,11 @@ namespace BetterRidingViewMod
                 angle -= 360;
             return angle;
         }
+
         private void Update(){
+            if (!GameManager.Instance.StateManager.GameInProgress){
+                return;
+            }
             if (GameManager.Instance.TransportManager.IsOnFoot){
                 return;
             }
@@ -81,18 +88,25 @@ namespace BetterRidingViewMod
             normalized_angle_x = NormalizeValue(camera_angle_x, horse_center_angle, horse_down_angle);
             horse_texture_offset_y = GetValueFromNormalize(normalized_angle_x, horse_center_position, horse_down_position);
         }
-        // * Mimics the OnGUI method inside of TransportManager.cs, with some additions to allow dynamic horse positioning.
-        void OnGUI()
-        {                
-            if (DaggerfallUI.Instance.CustomScreenRect != null)
-                screenRect = DaggerfallUI.Instance.CustomScreenRect.Value;
-            else
-                screenRect = new Rect(0, 0, Screen.width, Screen.height);
 
-            if (Event.current.type.Equals(EventType.Repaint) && !GameManager.IsGamePaused)
-            {
-                if ((GameManager.Instance.TransportManager.TransportMode == TransportModes.Horse || GameManager.Instance.TransportManager.TransportMode == TransportModes.Cart) && GameManager.Instance.TransportManager.RidingTexture.texture != null)
-                {
+        // * Mimics the OnGUI method inside of TransportManager.cs, with some additions to allow dynamic horse positioning.
+        void OnGUI(){
+            if (!GameManager.Instance.StateManager.GameInProgress){
+                return;
+            }
+            if (GameManager.Instance.TransportManager.IsOnFoot){
+                return;
+            }
+            if (GameManager.Instance.TransportManager.RidingTexture.texture != null){
+                if (DaggerfallUI.Instance.CustomScreenRect != null){ 
+                    screenRect = DaggerfallUI.Instance.CustomScreenRect.Value;
+                }
+                else{
+                    screenRect = new Rect(0, 0, Screen.width, Screen.height);
+                }
+                
+                if (Event.current.type.Equals(EventType.Repaint)){
+                // if (Event.current.type.Equals(EventType.Repaint) && !GameManager.IsGamePaused)
                     GUI.depth = 2;
                     float horseScaleY = (float)screenRect.height / nativeScreenHeight;
                     float horseScaleX = horseScaleY * TransportManager.ScaleFactorX;
@@ -103,16 +117,17 @@ namespace BetterRidingViewMod
                     {
                         horseOffsetHeight = (int)DaggerfallUI.Instance.DaggerfallHUD.LargeHUD.ScreenHeight;
                     }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
                     float horseOffsetWidth = 0;
                     horseOffsetHeight += horse_texture_offset_y;
                     horseOffsetWidth += horse_horizontal_position;
                     Rect pos = new Rect(
-                                    screenRect.x + screenRect.width / 2f - (GameManager.Instance.TransportManager.RidingTexture.width * horseScaleX) / 2f + horseOffsetWidth,
-                                    screenRect.y + screenRect.height - (GameManager.Instance.TransportManager.RidingTexture.height * horseScaleY) - horseOffsetHeight,
-                                    GameManager.Instance.TransportManager.RidingTexture.width * horseScaleX,
-                                    GameManager.Instance.TransportManager.RidingTexture.height * horseScaleY);
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        screenRect.x + screenRect.width / 2f - (GameManager.Instance.TransportManager.RidingTexture.width * horseScaleX) / 2f + horseOffsetWidth,
+                        screenRect.y + screenRect.height - (GameManager.Instance.TransportManager.RidingTexture.height * horseScaleY) - horseOffsetHeight,
+                        GameManager.Instance.TransportManager.RidingTexture.width * horseScaleX,
+                        GameManager.Instance.TransportManager.RidingTexture.height * horseScaleY)
+                    ;
+////////////////////////////////////////////////////////////////////////////////
                     DaggerfallUI.DrawTexture(pos, GameManager.Instance.TransportManager.RidingTexture.texture, ScaleMode.StretchToFill, true, GameManager.Instance.TransportManager.Tint);
                 }
             }

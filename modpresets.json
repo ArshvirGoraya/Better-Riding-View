@@ -2,7 +2,7 @@
     {
         "Title": "Immersive",
         "Author": "Arshvir Goraya",
-        "Description": "What feels the most immersive (to me).",
+        "Description": "What feels the most immersive (for me on 1920x1080 screen size).",
         "SettingsVersion": "1.0.0",
         "Values": {
             "DynamicHorsePositioning": {
@@ -10,10 +10,10 @@
             },
             "CenterPositioning": {
                 "HorseCenterPosition": "0",
-                "HorseCenterAngle": "-15"
+                "HorseCenterAngle": "-10"
             },
             "DownPositioning": {
-                "HorseDownPosition": "-300",
+                "HorseDownPosition": "-400",
                 "HorseDownAngle": "40"
             },
             "HorizontalPositioning": {
@@ -25,7 +25,7 @@
     {
         "Title": "Default",
         "Author": "Arshvir Goraya",
-        "Description": "Base preset from which you can make your own. \nMod is set to \"immersive\" preset when installed.",
+        "Description": "Base preset from which you can make your own. \n\nMod is set to \"immersive\" preset when installed.",
         "SettingsVersion": "1.0.0",
         "Values": {
             "DynamicHorsePositioning": {
@@ -36,7 +36,7 @@
                 "HorseCenterAngle": "0"
             },
             "DownPositioning": {
-                "HorseDownPosition": "-300",
+                "HorseDownPosition": "-400",
                 "HorseDownAngle": "90"
             },
             "HorizontalPositioning": {
@@ -48,19 +48,19 @@
     {
         "Title": "Small Horse",
         "Author": "Arshvir Goraya",
-        "Description": "Gives the feeling of riding a smaller horse. \nMore space to view your surroundings!",
+        "Description": "Gives the feeling of riding a smaller horse (on 1920x1080 screen size).",
         "SettingsVersion": "1.0.0",
         "Values": {
             "DynamicHorsePositioning": {
                 "DynamicHorsePositioning": "True"
             },
             "CenterPositioning": {
-                "HorseCenterPosition": "-50",
+                "HorseCenterPosition": "-60",
                 "HorseCenterAngle": "-20"
             },
             "DownPositioning": {
-                "HorseDownPosition": "-300",
-                "HorseDownAngle": "50"
+                "HorseDownPosition": "-400",
+                "HorseDownAngle": "40"
             },
             "HorizontalPositioning": {
                 "HorseHorizontalPosition": "-80"
@@ -71,7 +71,7 @@
     {
         "Title": "When Looking Down",
         "Author": "Arshvir Goraya",
-        "Description": "Shows horse only when looking down.\r",
+        "Description": "Shows horse only when looking down (on 1920x1080 screen size).",
         "SettingsVersion": "1.0.0",
         "Values": {
             "DynamicHorsePositioning": {
@@ -82,8 +82,8 @@
                 "HorseCenterAngle": "-45"
             },
             "DownPositioning": {
-                "HorseDownPosition": "-300",
-                "HorseDownAngle": "3"
+                "HorseDownPosition": "-400",
+                "HorseDownAngle": "7"
             },
             "HorizontalPositioning": {
                 "HorseHorizontalPosition": "0"
