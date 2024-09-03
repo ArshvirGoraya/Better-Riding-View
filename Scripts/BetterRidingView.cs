@@ -24,9 +24,9 @@ namespace BetterRidingViewMod
         // * Vertical Camera Positioning:
         public static bool dynamic_horse_positioning = true;
         public static float horse_center_position = 0;
-        public static float horse_center_angle = 0; // -15
+        public static float horse_center_angle = 0;
         public static float horse_down_position = 0;
-        public static float horse_down_angle = 0; // 40
+        public static float horse_down_angle = 0;
         // * Dynamic Jumping
         public static bool dynamic_horse_jumping = true;
         public static float max_horse_jump_height = 0;
@@ -51,7 +51,6 @@ namespace BetterRidingViewMod
         GameObject gameObjectPlayerAdvanced = null;
         public float previous_camera_y_angle = 0;
         public bool previous_on_foot = true;
-
         // * Camera
         float camera_angle_x = 0;
         float normalized_angle_x = 0;
@@ -62,16 +61,13 @@ namespace BetterRidingViewMod
         readonly float nativeScreenHeight = 200;
 
         [Invoke(StateManager.StateTypes.Start, 0)]
-        public static void Init(InitParams initParams)
-        {
+        public static void Init(InitParams initParams){
             mod = initParams.Mod;
             var go = new GameObject(mod.Title);
             go.AddComponent<BetterRidingView>();
-            mod.IsReady = true;
-
-            // * Get mod settings on change!
             mod.LoadSettingsCallback = LoadSettings;
             mod.LoadSettings();
+            mod.IsReady = true;
         }
         // * Raised when user changes mod settings.
         static void LoadSettings(ModSettings modSettings, ModSettingsChange change){
@@ -90,21 +86,16 @@ namespace BetterRidingViewMod
             easing_down_function_num = modSettings.GetInt("DynamicJumping", "JumpDownEasing");
             // * Horizontal Camera Positioning:
             horse_horizontal_position_target = modSettings.GetFloat("HorizontalPositioning", "HorseHorizontalPosition");
-            horizontal_lerp_strength = (float)modSettings.GetInt("HorizontalPositioning", "LerpStrength") / 100; // Make into float.
+            horizontal_lerp_strength = (float)modSettings.GetInt("HorizontalPositioning", "LerpStrength") / 100; // * Make into float.
             if (horizontal_lerp_strength < 1){
                 horse_horizontal_position = horse_horizontal_position_target;
             }
         }
-        private void Start()
-        {
-            // SaveLoadManager.OnLoad += Load;
+        private void Start(){
             GameManager.Instance.TransportManager.DrawHorse = false;
             previous_on_foot = GameManager.Instance.TransportManager.IsOnFoot;
             gameObjectPlayerAdvanced = GameObject.Find("PlayerAdvanced");
         }
-        // private void Load(SaveData_v1 saveData){
-        //     previous_on_foot = GameManager.Instance.TransportManager.IsOnFoot;
-        // }
 ////////////////////////////////////////////////////////////////////////////////
         public static float NormalizeValue(float value, float min, float max){
             return (value - min) / (max - min);
@@ -157,7 +148,7 @@ namespace BetterRidingViewMod
             return Mathf.Min(horse_center_position, current_tween_value);
         }
 ////////////////////////////////////////////////////////////////////////////////
-        private void Update(){
+        private void LateUpdate(){
             if (!GameManager.Instance.StateManager.GameInProgress || GameManager.IsGamePaused){
                 return;
             }
@@ -216,25 +207,22 @@ namespace BetterRidingViewMod
                     horizontal_lerp_strength
                 );
             }
+
         }
         // * Mimics the OnGUI method inside of TransportManager.cs, with some additions to allow dynamic horse positioning.
         void OnGUI(){
             if (!GameManager.Instance.StateManager.GameInProgress){
                 return;
             }
-            if (GameManager.Instance.TransportManager.IsOnFoot){
-                return;
-            }
-            if (GameManager.Instance.TransportManager.RidingTexture.texture != null){
-                if (DaggerfallUI.Instance.CustomScreenRect != null){ 
-                    screenRect = DaggerfallUI.Instance.CustomScreenRect.Value;
+            if (Event.current.type.Equals(EventType.Repaint)){
+                if (GameManager.Instance.TransportManager.IsOnFoot){
+                    return;
                 }
-                else{
-                    screenRect = new Rect(0, 0, Screen.width, Screen.height);
-                }
-                
-                if (Event.current.type.Equals(EventType.Repaint)){
+                if (GameManager.Instance.TransportManager.RidingTexture.texture != null){
+                    if (DaggerfallUI.Instance.CustomScreenRect != null){ screenRect = DaggerfallUI.Instance.CustomScreenRect.Value; }
+                    else{ screenRect = new Rect(0, 0, Screen.width, Screen.height); }
                     GUI.depth = 2;
+////////////////////////////////////////////////////////////////////////////////
                     float horseScaleY = (float)screenRect.height / nativeScreenHeight;
                     float horseScaleX = horseScaleY * TransportManager.ScaleFactorX;
                     float horseOffsetHeight = 0;
@@ -252,10 +240,10 @@ namespace BetterRidingViewMod
                         screenRect.x + screenRect.width / 2f - (GameManager.Instance.TransportManager.RidingTexture.width * horseScaleX) / 2f + horseOffsetWidth,
                         screenRect.y + screenRect.height - (GameManager.Instance.TransportManager.RidingTexture.height * horseScaleY) - horseOffsetHeight,
                         GameManager.Instance.TransportManager.RidingTexture.width * horseScaleX,
-                        GameManager.Instance.TransportManager.RidingTexture.height * horseScaleY)
-                    ;
+                        GameManager.Instance.TransportManager.RidingTexture.height * horseScaleY
+                    );
 ////////////////////////////////////////////////////////////////////////////////
-                    DaggerfallUI.DrawTexture(pos, GameManager.Instance.TransportManager.RidingTexture.texture, ScaleMode.StretchToFill, true, GameManager.Instance.TransportManager.Tint);
+                    DaggerfallUI.DrawTexture(pos, GameManager.Instance.TransportManager.RidingTexture.texture, ScaleMode.StretchToFill, true, GameManager.Instance.TransportManager.Tint);    
                 }
             }
         }
