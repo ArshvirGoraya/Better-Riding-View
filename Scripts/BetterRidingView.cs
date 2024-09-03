@@ -119,8 +119,6 @@ namespace BetterRidingViewMod
                 horse_texture_offset_y = horse_center_position;
                 return;
             }
-
-            // * Start Jump Tween?
             if (dynamic_horse_jumping){
                 if (on_ground){
                     if ((GameManager.Instance.AcrobatMotor.Jumping || GameManager.Instance.AcrobatMotor.Falling)){
@@ -128,7 +126,6 @@ namespace BetterRidingViewMod
                         Debug.Log($"off ground!!!");
                         horse_tween_type = HorseTweenType.TweenUp;
                         on_ground = false;
-                        // * Start Up Tween:
                         tween_elapsed_time = 0;
                     }
                 }else{
@@ -137,7 +134,6 @@ namespace BetterRidingViewMod
                         Debug.Log($"on ground");
                         horse_tween_type = HorseTweenType.TweenDown;
                         on_ground = true;
-                        // * Start Down Tween:
                         tween_elapsed_time = 0;
                     }
                 }
@@ -158,30 +154,37 @@ namespace BetterRidingViewMod
                     }
                 }
             }
+            if (horse_texture_offset_y > horse_center_position){
+                Debug.Log($"GOING OVER THE LIMIt: {horse_texture_offset_y} > {horse_center_position}");
+            }
         }
+
 
         float IncrementTweenUp(){
             float start_val = GetHorseTextureOffset();
             float target_val = Mathf.Min(horse_center_position, start_val + max_horse_jump_height);
+            if (tween_elapsed_time > horse_jump_up_time) tween_elapsed_time = horse_jump_up_time;
             current_tween_value = GetValueFromNormalize(
-                // BetterRidingViewEasing.SineEaseOut(NormalizeValue(tween_elapsed_time, 0, horse_jump_up_time)),
-                BetterRidingViewEasing.Interpolate(NormalizeValue(tween_elapsed_time, 0, horse_jump_down_time), easing_up_function_num),
+                BetterRidingViewEasing.Interpolate(NormalizeValue(tween_elapsed_time, 0, horse_jump_up_time), easing_up_function_num),
                 start_val,
                 target_val
             );
-            return current_tween_value;
+            // return current_tween_value;
+            return Mathf.Min(horse_center_position, current_tween_value);
         }
 
         float IncrementTweenDown(){
             float start_val = current_tween_value;
             float target_val = GetHorseTextureOffset();
+            // float target_val = Mathf.Min(horse_center_position, GetHorseTextureOffset());
+            if (tween_elapsed_time > horse_jump_down_time) tween_elapsed_time = horse_jump_down_time;
             current_tween_value = GetValueFromNormalize(
-                // BetterRidingViewEasing.SineEaseOut(NormalizeValue(tween_elapsed_time, 0, horse_jump_down_time)),
                 BetterRidingViewEasing.Interpolate(NormalizeValue(tween_elapsed_time, 0, horse_jump_down_time), easing_down_function_num),
                 start_val,
                 target_val
             );
-            return current_tween_value;
+            // return current_tween_value;
+            return Mathf.Min(horse_center_position, current_tween_value);
         }
 
         // * Mimics the OnGUI method inside of TransportManager.cs, with some additions to allow dynamic horse positioning.
@@ -201,7 +204,6 @@ namespace BetterRidingViewMod
                 }
                 
                 if (Event.current.type.Equals(EventType.Repaint)){
-                // if (Event.current.type.Equals(EventType.Repaint) && !GameManager.IsGamePaused)
                     GUI.depth = 2;
                     float horseScaleY = (float)screenRect.height / nativeScreenHeight;
                     float horseScaleX = horseScaleY * TransportManager.ScaleFactorX;
