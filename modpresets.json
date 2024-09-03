@@ -18,7 +18,10 @@
                 "HorseDownAngle": "40"
             },
             "HorizontalPositioning": {
-                "HorseHorizontalPosition": "0"
+                "HorseHorizontalPosition": "0",
+                "HorseHorizontalPositioning": "True",
+                "LerpAmount": "0.1",
+                "LerpStrength": "8"
             },
             "DynamicJumping": {
                 "DynamicHorseJumping": "True",
@@ -51,7 +54,10 @@
                 "HorseDownAngle": "90"
             },
             "HorizontalPositioning": {
-                "HorseHorizontalPosition": "0"
+                "HorseHorizontalPosition": "0",
+                "HorseHorizontalPositioning": "True",
+                "LerpAmount": "0.1",
+                "LerpStrength": "100"
             },
             "DynamicJumping": {
                 "DynamicHorseJumping": "True",
@@ -84,7 +90,10 @@
                 "HorseDownAngle": "40"
             },
             "HorizontalPositioning": {
-                "HorseHorizontalPosition": "-80"
+                "HorseHorizontalPosition": "-80",
+                "HorseHorizontalPositioning": "True",
+                "LerpAmount": "0.1",
+                "LerpStrength": "10"
             },
             "DynamicJumping": {
                 "DynamicHorseJumping": "True",
@@ -117,7 +126,10 @@
                 "HorseDownAngle": "7"
             },
             "HorizontalPositioning": {
-                "HorseHorizontalPosition": "0"
+                "HorseHorizontalPosition": "0",
+                "HorseHorizontalPositioning": "True",
+                "LerpAmount": "0.1",
+                "LerpStrength": "10"
             },
             "DynamicJumping": {
                 "DynamicHorseJumping": "True",
