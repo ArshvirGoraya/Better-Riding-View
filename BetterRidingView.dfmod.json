@@ -9,6 +9,7 @@
     "Files": [
         "Assets/Game/Mods/BetterRidingView/Scripts/BetterRidingView.cs",
         "Assets/Game/Mods/BetterRidingView/modpresets.json",
-        "Assets/Game/Mods/BetterRidingView/modsettings.json"
+        "Assets/Game/Mods/BetterRidingView/modsettings.json",
+        "Assets/Game/Mods/BetterRidingView/Scripts/BetterRidingViewEasing.cs"
     ]
 }

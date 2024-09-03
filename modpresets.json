@@ -19,6 +19,15 @@
             },
             "HorizontalPositioning": {
                 "HorseHorizontalPosition": "0"
+            },
+            "DynamicJumping": {
+                "DynamicHorseJumping": "True",
+                "MaxJumpHeight": "50",
+                "JumpUpTime": "0.5",
+                "JumpDownTime": "0.5",
+                "JumpUpEasing": "16",
+                "JumpDownEasingFunction": "0",
+                "JumpDownEasing": "16"
             }
         },
         "$version": "v1"
@@ -43,6 +52,15 @@
             },
             "HorizontalPositioning": {
                 "HorseHorizontalPosition": "0"
+            },
+            "DynamicJumping": {
+                "DynamicHorseJumping": "True",
+                "MaxJumpHeight": "50",
+                "JumpUpTime": "0.5",
+                "JumpDownTime": "0.5",
+                "JumpUpEasing": "21",
+                "JumpDownEasingFunction": "0",
+                "JumpDownEasing": "21"
             }
         },
         "$version": "v1"
@@ -67,6 +85,15 @@
             },
             "HorizontalPositioning": {
                 "HorseHorizontalPosition": "-80"
+            },
+            "DynamicJumping": {
+                "DynamicHorseJumping": "True",
+                "MaxJumpHeight": "50",
+                "JumpUpTime": "0.5",
+                "JumpDownTime": "0.5",
+                "JumpUpEasing": "13",
+                "JumpDownEasingFunction": "0",
+                "JumpDownEasing": "16"
             }
         },
         "$version": "v1"
@@ -91,6 +118,15 @@
             },
             "HorizontalPositioning": {
                 "HorseHorizontalPosition": "0"
+            },
+            "DynamicJumping": {
+                "DynamicHorseJumping": "True",
+                "MaxJumpHeight": "50",
+                "JumpUpTime": "0.5",
+                "JumpDownTime": "0.5",
+                "JumpUpEasing": "1",
+                "JumpDownEasingFunction": "0",
+                "JumpDownEasing": "1"
             }
         },
         "$version": "v1"

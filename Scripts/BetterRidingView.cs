@@ -20,13 +20,20 @@ namespace BetterRidingViewMod
 {
     public class BetterRidingView : MonoBehaviour
     {
+        // * Dynamic Positiong
         public static bool dynamic_horse_positioning = true;
-        public static bool dynamic_horse_jumping = true;
         public static float horse_center_position = 0;
         public static float horse_center_angle = 0; // -15
         public static float horse_down_position = 0;
         public static float horse_down_angle = 0; // 40
         public static float horse_horizontal_position = 0;
+        // * Dynamic Jumping
+        public static bool dynamic_horse_jumping = true;
+        public static float max_horse_jump_height = 0;
+        public static float horse_jump_up_time = 0;
+        public static float horse_jump_down_time = 0;
+        public static int easing_up_function_num = 0;
+        public static int easing_down_function_num = 0;
         public enum HorseTweenType
         {
             None,
@@ -34,16 +41,13 @@ namespace BetterRidingViewMod
             TweenDown,
         }
         public HorseTweenType horse_tween_type = HorseTweenType.None;
-        public float tween_target = 0;
-        public float tween_start = 0;
         public float current_tween_value = 0;
-        const float TWEEN_TOTAL_TIME = 0.5f; // SECONDS
         float tween_elapsed_time = 0;
         public bool on_ground = true;
-
+        // * Camera
         float camera_angle_x = 0;
         float normalized_angle_x = 0;
-        public float horse_texture_offset_y = 0;
+        public static float horse_texture_offset_y = 0;
 ////////////////////////////////////////////////////////////////////////////////
         private static Mod mod;
         Rect screenRect;
@@ -63,13 +67,20 @@ namespace BetterRidingViewMod
         }
         // * Raised when user changes mod settings.
         static void LoadSettings(ModSettings modSettings, ModSettingsChange change){
+            // * Vertical Positioning:
             dynamic_horse_positioning = modSettings.GetBool("DynamicHorsePositioning", "DynamicHorsePositioning");
-            dynamic_horse_jumping = modSettings.GetBool("DynamicHorsePositioning", "DynamicHorseJumping");
             horse_center_position = modSettings.GetFloat("CenterPositioning", "HorseCenterPosition");
             horse_center_angle = modSettings.GetFloat("CenterPositioning", "HorseCenterAngle");
             horse_down_position = modSettings.GetFloat("DownPositioning", "HorseDownPosition");
             horse_down_angle = modSettings.GetFloat("DownPositioning", "HorseDownAngle");
             horse_horizontal_position = modSettings.GetFloat("HorizontalPositioning", "HorseHorizontalPosition");
+            // * Jumping:
+            dynamic_horse_jumping = modSettings.GetBool("DynamicJumping", "DynamicHorseJumping");
+            max_horse_jump_height = modSettings.GetFloat("DynamicJumping", "MaxJumpHeight");
+            horse_jump_up_time = modSettings.GetFloat("DynamicJumping", "JumpUpTime");
+            horse_jump_down_time = modSettings.GetFloat("DynamicJumping", "JumpDownTime");
+            easing_up_function_num = modSettings.GetInt("DynamicJumping", "JumpUpEasing");
+            easing_down_function_num = modSettings.GetInt("DynamicJumping", "JumpDownEasing");
         }
         private void Start()
         {
@@ -142,25 +153,19 @@ namespace BetterRidingViewMod
                 }else{
                     horse_texture_offset_y = IncrementTweenDown();
                     // * End jump easing easing.
-                    if (tween_elapsed_time >= TWEEN_TOTAL_TIME){
+                    if (tween_elapsed_time >= horse_jump_down_time){
                         horse_tween_type = HorseTweenType.None;
                     }
                 }
             }
         }
 
-        float EaseInOutSine(float x) {
-            return -(Mathf.Cos((float)Math.PI * x - 1) / 2);
-        }
-        float EaseOutSine(float x) {
-            return Mathf.Sin((x * (float)Math.PI) / 2);
-        }
-
         float IncrementTweenUp(){
             float start_val = GetHorseTextureOffset();
-            float target_val = Mathf.Min(horse_center_position, start_val + 50);
+            float target_val = Mathf.Min(horse_center_position, start_val + max_horse_jump_height);
             current_tween_value = GetValueFromNormalize(
-                EaseOutSine(NormalizeValue(tween_elapsed_time, 0, TWEEN_TOTAL_TIME)),
+                // BetterRidingViewEasing.SineEaseOut(NormalizeValue(tween_elapsed_time, 0, horse_jump_up_time)),
+                BetterRidingViewEasing.Interpolate(NormalizeValue(tween_elapsed_time, 0, horse_jump_down_time), easing_up_function_num),
                 start_val,
                 target_val
             );
@@ -171,7 +176,8 @@ namespace BetterRidingViewMod
             float start_val = current_tween_value;
             float target_val = GetHorseTextureOffset();
             current_tween_value = GetValueFromNormalize(
-                EaseOutSine(NormalizeValue(tween_elapsed_time, 0, TWEEN_TOTAL_TIME)),
+                // BetterRidingViewEasing.SineEaseOut(NormalizeValue(tween_elapsed_time, 0, horse_jump_down_time)),
+                BetterRidingViewEasing.Interpolate(NormalizeValue(tween_elapsed_time, 0, horse_jump_down_time), easing_down_function_num),
                 start_val,
                 target_val
             );
