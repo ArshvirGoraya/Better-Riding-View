@@ -16,6 +16,7 @@ using System;
 using __ExternalAssets;
 using System.Runtime.InteropServices.WindowsRuntime;
 using DaggerfallWorkshop.Game.Serialization;
+using DaggerfallConnect.Utility;
 
 namespace BetterRidingViewMod
 {
@@ -61,7 +62,7 @@ namespace BetterRidingViewMod
         readonly float nativeScreenHeight = 200;
 
         [Invoke(StateManager.StateTypes.Start, 0)]
-        public static void Init(InitParams initParams){
+        public static void Init(InitParams initParams){            
             mod = initParams.Mod;
             var go = new GameObject(mod.Title);
             go.AddComponent<BetterRidingView>();
@@ -73,9 +74,9 @@ namespace BetterRidingViewMod
         static void LoadSettings(ModSettings modSettings, ModSettingsChange change){
             // * Vertical Camera Positioning:
             horse_vertical_positioning = modSettings.GetBool("VerticalPositioning", "VerticalPositioning");
-            horse_center_position = modSettings.GetFloat("VerticalPositioning", "HorseCenterPosition");
+            horse_center_position = (float)modSettings.GetInt("VerticalPositioning", "HorseCenterPosition");
             horse_center_angle = modSettings.GetFloat("VerticalPositioning", "HorseCenterAngle");
-            horse_down_position = modSettings.GetFloat("VerticalPositioning", "HorseDownPosition");
+            horse_down_position = (float)modSettings.GetInt("VerticalPositioning", "HorseDownPosition");
             horse_down_angle = modSettings.GetFloat("VerticalPositioning", "HorseDownAngle");
             // * Jumping:
             dynamic_horse_jumping = modSettings.GetBool("DynamicJumping", "DynamicHorseJumping");
@@ -85,7 +86,7 @@ namespace BetterRidingViewMod
             easing_up_function_num = modSettings.GetInt("DynamicJumping", "JumpUpEasing");
             easing_down_function_num = modSettings.GetInt("DynamicJumping", "JumpDownEasing");
             // * Horizontal Camera Positioning:
-            horse_horizontal_position_target = modSettings.GetFloat("HorizontalPositioning", "HorseHorizontalPosition");
+            horse_horizontal_position_target = (float)modSettings.GetInt("HorizontalPositioning", "HorseHorizontalPosition");
             horizontal_lerp_strength = (float)modSettings.GetInt("HorizontalPositioning", "LerpStrength") / 100; // * Make into float.
             if (horizontal_lerp_strength < 1){
                 horse_horizontal_position = horse_horizontal_position_target;
@@ -95,6 +96,15 @@ namespace BetterRidingViewMod
             GameManager.Instance.TransportManager.DrawHorse = false;
             previous_on_foot = GameManager.Instance.TransportManager.IsOnFoot;
             gameObjectPlayerAdvanced = GameObject.Find("PlayerAdvanced");
+            StreamingWorld.OnTeleportToCoordinates += Teleported;
+        }
+        private void Teleported(DFPosition worldPos){
+            Debug.Log($"teleported on horse: {worldPos}");
+            // horse_horizontal_position = horse_horizontal_position_target;
+            // if (!GameManager.Instance.TransportManager.IsOnFoot){
+            //     Debug.Log($"teleported on horse: {worldPos}");
+            //     horse_horizontal_position = horse_horizontal_position_target;
+            // }
         }
 ////////////////////////////////////////////////////////////////////////////////
         public static float NormalizeValue(float value, float min, float max){

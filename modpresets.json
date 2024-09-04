@@ -8,9 +8,9 @@
             "VerticalPositioning": {
                 "VerticalPositioning": "True",
                 "DynamicHorseJumping": "True",
-                "HorseCenterPosition": "0",
+                "HorseDownPosition": "-570",
                 "HorseCenterAngle": "-10",
-                "HorseDownPosition": "-400",
+                "HorseCenterPosition": "0",
                 "HorseDownAngle": "40"
             },
             "HorizontalPositioning": {
@@ -40,9 +40,9 @@
             "VerticalPositioning": {
                 "VerticalPositioning": "True",
                 "DynamicHorseJumping": "True",
-                "HorseCenterPosition": "0",
+                "HorseDownPosition": "-570",
                 "HorseCenterAngle": "0",
-                "HorseDownPosition": "-400",
+                "HorseCenterPosition": "0",
                 "HorseDownAngle": "90"
             },
             "HorizontalPositioning": {
@@ -72,9 +72,9 @@
             "VerticalPositioning": {
                 "VerticalPositioning": "True",
                 "DynamicHorseJumping": "True",
-                "HorseCenterPosition": "-60",
+                "HorseDownPosition": "-570",
                 "HorseCenterAngle": "-20",
-                "HorseDownPosition": "-400",
+                "HorseCenterPosition": "-60",
                 "HorseDownAngle": "40"
             },
             "HorizontalPositioning": {
@@ -104,9 +104,9 @@
             "VerticalPositioning": {
                 "VerticalPositioning": "True",
                 "DynamicHorseJumping": "True",
-                "HorseCenterPosition": "0",
+                "HorseDownPosition": "-570",
                 "HorseCenterAngle": "-45",
-                "HorseDownPosition": "-400",
+                "HorseCenterPosition": "0",
                 "HorseDownAngle": "7"
             },
             "HorizontalPositioning": {

@@ -14,13 +14,13 @@
                     "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.ToggleKey"
                 },
                 {
-                    "Min": -10000.0,
-                    "Max": 10000.0,
-                    "Value": 0.0,
+                    "Min": -10000,
+                    "Max": 10000,
+                    "Value": 0,
                     "Name": "HorseCenterPosition",
                     "Description": "Horse's position when at the \"center\" position. 0 = middle of screen.",
                     "$version": "v1",
-                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderFloatKey"
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderIntKey"
                 },
                 {
                     "Min": -90.0,
@@ -32,13 +32,13 @@
                     "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderFloatKey"
                 },
                 {
-                    "Min": -10000.0,
-                    "Max": 10000.0,
-                    "Value": -400.0,
+                    "Min": -10000,
+                    "Max": 10000,
+                    "Value": -570,
                     "Name": "HorseDownPosition",
                     "Description": "Horse's position when at the \"down\" position. 0 = middle of screen.",
                     "$version": "v1",
-                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderFloatKey"
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderIntKey"
                 },
                 {
                     "Min": 0.0,
@@ -58,13 +58,13 @@
             "IsAdvanced": false,
             "Keys": [
                 {
-                    "Min": -10000.0,
-                    "Max": 10000.0,
-                    "Value": 0.0,
+                    "Min": -10000,
+                    "Max": 10000,
+                    "Value": 0,
                     "Name": "HorseHorizontalPosition",
                     "Description": "Horse's position horizontally. 0 = center of screen.",
                     "$version": "v1",
-                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderFloatKey"
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderIntKey"
                 },
                 {
                     "Min": 0,
