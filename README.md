@@ -18,6 +18,10 @@ A mod for [Daggerfall Unity](https://github.com/Interkarma/daggerfall-unity), an
   - Can opt out of all dynamic positioning and just adjust the horse's position vertically and horizontally.
 - Mod Setting Presets: comes with different kinds of mod setting presets for you to choose from.
 
+Here is a video example: https://youtu.be/h-fvnxjHpEY
+
+
+
 ## Installation Guide
 
 - Follow the guide on the Nexus Mod Page: https://www.nexusmods.com/daggerfallunity/mods/791
