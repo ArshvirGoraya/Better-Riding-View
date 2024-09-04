@@ -22,7 +22,7 @@ namespace BetterRidingViewMod
     public class BetterRidingView : MonoBehaviour
     {
         // * Vertical Camera Positioning:
-        public static bool dynamic_horse_positioning = true;
+        public static bool horse_vertical_positioning = true;
         public static float horse_center_position = 0;
         public static float horse_center_angle = 0;
         public static float horse_down_position = 0;
@@ -72,11 +72,11 @@ namespace BetterRidingViewMod
         // * Raised when user changes mod settings.
         static void LoadSettings(ModSettings modSettings, ModSettingsChange change){
             // * Vertical Camera Positioning:
-            dynamic_horse_positioning = modSettings.GetBool("DynamicHorsePositioning", "DynamicHorsePositioning");
-            horse_center_position = modSettings.GetFloat("CenterPositioning", "HorseCenterPosition");
-            horse_center_angle = modSettings.GetFloat("CenterPositioning", "HorseCenterAngle");
-            horse_down_position = modSettings.GetFloat("DownPositioning", "HorseDownPosition");
-            horse_down_angle = modSettings.GetFloat("DownPositioning", "HorseDownAngle");
+            horse_vertical_positioning = modSettings.GetBool("VerticalPositioning", "VerticalPositioning");
+            horse_center_position = modSettings.GetFloat("VerticalPositioning", "HorseCenterPosition");
+            horse_center_angle = modSettings.GetFloat("VerticalPositioning", "HorseCenterAngle");
+            horse_down_position = modSettings.GetFloat("VerticalPositioning", "HorseDownPosition");
+            horse_down_angle = modSettings.GetFloat("VerticalPositioning", "HorseDownAngle");
             // * Jumping:
             dynamic_horse_jumping = modSettings.GetBool("DynamicJumping", "DynamicHorseJumping");
             max_horse_jump_height = modSettings.GetFloat("DynamicJumping", "MaxJumpHeight");
@@ -159,7 +159,7 @@ namespace BetterRidingViewMod
             if (GameManager.Instance.TransportManager.IsOnFoot){
                 return;
             }
-            if (!dynamic_horse_positioning){
+            if (!horse_vertical_positioning){
                 horse_texture_offset_y = horse_center_position;
                 return;
             }
@@ -228,8 +228,7 @@ namespace BetterRidingViewMod
                     float horseOffsetHeight = 0;
                     if (DaggerfallUI.Instance.DaggerfallHUD != null &&
                         DaggerfallUnity.Settings.LargeHUD &&
-                        DaggerfallUnity.Settings.LargeHUDOffsetHorse)
-                    {
+                        DaggerfallUnity.Settings.LargeHUDOffsetHorse){
                         horseOffsetHeight = (int)DaggerfallUI.Instance.DaggerfallHUD.LargeHUD.ScreenHeight;
                     }
 ////////////////////////////////////////////////////////////////////////////////

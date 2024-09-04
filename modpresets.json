@@ -5,9 +5,13 @@
         "Description": "What feels the most immersive (for me on 1920x1080 screen size).",
         "SettingsVersion": "1.0.0",
         "Values": {
-            "DynamicHorsePositioning": {
-                "DynamicHorsePositioning": "True",
-                "DynamicHorseJumping": "True"
+            "VerticalPositioning": {
+                "VerticalPositioning": "True",
+                "DynamicHorseJumping": "True",
+                "HorseCenterPosition": "0",
+                "HorseCenterAngle": "-10",
+                "HorseDownPosition": "-400",
+                "HorseDownAngle": "40"
             },
             "CenterPositioning": {
                 "HorseCenterPosition": "0",
@@ -41,9 +45,13 @@
         "Description": "Base preset from which you can make your own. \n\nMod is set to \"immersive\" preset when installed.",
         "SettingsVersion": "1.0.0",
         "Values": {
-            "DynamicHorsePositioning": {
-                "DynamicHorsePositioning": "True",
-                "DynamicHorseJumping": "True"
+            "VerticalPositioning": {
+                "VerticalPositioning": "True",
+                "DynamicHorseJumping": "True",
+                "HorseCenterPosition": "0",
+                "HorseCenterAngle": "0",
+                "HorseDownPosition": "-400",
+                "HorseDownAngle": "90"
             },
             "CenterPositioning": {
                 "HorseCenterPosition": "0",
@@ -77,9 +85,13 @@
         "Description": "Gives the feeling of riding a smaller horse (on 1920x1080 screen size).",
         "SettingsVersion": "1.0.0",
         "Values": {
-            "DynamicHorsePositioning": {
-                "DynamicHorsePositioning": "True",
-                "DynamicHorseJumping": "True"
+            "VerticalPositioning": {
+                "VerticalPositioning": "True",
+                "DynamicHorseJumping": "True",
+                "HorseCenterPosition": "-60",
+                "HorseCenterAngle": "-20",
+                "HorseDownPosition": "-400",
+                "HorseDownAngle": "40"
             },
             "CenterPositioning": {
                 "HorseCenterPosition": "-60",
@@ -113,9 +125,13 @@
         "Description": "Shows horse only when looking down (on 1920x1080 screen size).",
         "SettingsVersion": "1.0.0",
         "Values": {
-            "DynamicHorsePositioning": {
-                "DynamicHorsePositioning": "True",
-                "DynamicHorseJumping": "True"
+            "VerticalPositioning": {
+                "VerticalPositioning": "True",
+                "DynamicHorseJumping": "True",
+                "HorseCenterPosition": "0",
+                "HorseCenterAngle": "-45",
+                "HorseDownPosition": "-400",
+                "HorseDownAngle": "7"
             },
             "CenterPositioning": {
                 "HorseCenterPosition": "0",

@@ -2,25 +2,17 @@
     "Version": "1.0.0",
     "Sections": [
         {
-            "Name": "DynamicHorsePositioning",
-            "Description": "Position horse dynamically with the camera's position.",
+            "Name": "VerticalPositioning",
+            "Description": "Position horse dynamically with the camera's vertical position.",
             "IsAdvanced": false,
             "Keys": [
                 {
                     "Value": true,
-                    "Name": "DynamicHorsePositioning",
-                    "Description": "Without this, the horse will just be positioned at the \"center angle\" you choose in Horse Position section.  ",
+                    "Name": "VerticalPositioning",
+                    "Description": "Without this, the horse will just be positioned vertically at the \"Horse Center Position.\"",
                     "$version": "v1",
                     "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.ToggleKey"
-                }
-            ],
-            "$version": "v1"
-        },
-        {
-            "Name": "CenterPositioning",
-            "Description": "Horse's \"center\" position and camera angle where it will be set to that position. ",
-            "IsAdvanced": false,
-            "Keys": [
+                },
                 {
                     "Min": -10000.0,
                     "Max": 10000.0,
@@ -33,20 +25,12 @@
                 {
                     "Min": -90.0,
                     "Max": 0.0,
-                    "Value": -45.0,
+                    "Value": -10.0,
                     "Name": "HorseCenterAngle",
                     "Description": "Camera angle where horse will be positioned at it's \"center\" position. 0 = middle of screen.",
                     "$version": "v1",
                     "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderFloatKey"
-                }
-            ],
-            "$version": "v1"
-        },
-        {
-            "Name": "DownPositioning",
-            "Description": "Horse's \"down\" position and camera angle where it will be set to that position. ",
-            "IsAdvanced": false,
-            "Keys": [
+                },
                 {
                     "Min": -10000.0,
                     "Max": 10000.0,
@@ -59,9 +43,9 @@
                 {
                     "Min": 0.0,
                     "Max": 90.0,
-                    "Value": 7.0,
+                    "Value": 40.0,
                     "Name": "HorseDownAngle",
-                    "Description": "Cameraangle where horse will be positioned at the \"bottom\" position. 90 = looking straight up",
+                    "Description": "Camera angle where horse will be positioned at the \"bottom\" position. 90 = looking straight up",
                     "$version": "v1",
                     "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderFloatKey"
                 }
@@ -70,31 +54,24 @@
         },
         {
             "Name": "HorizontalPositioning",
-            "Description": "Move horse left/right.",
+            "Description": "Lerp horse left/right with the camera's horizontal movement.",
             "IsAdvanced": false,
             "Keys": [
-                {
-                    "Value": true,
-                    "Name": "HorseHorizontalPositioning",
-                    "Description": "Enables lerping of the horizontal position of the horse towards Horse Horizontal Position.",
-                    "$version": "v1",
-                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.ToggleKey"
-                },
                 {
                     "Min": -10000.0,
                     "Max": 10000.0,
                     "Value": 0.0,
                     "Name": "HorseHorizontalPosition",
-                    "Description": "Horse's position horizontally. Moves horse left/right. 0 = center of screen.",
+                    "Description": "Horse's position horizontally. 0 = center of screen.",
                     "$version": "v1",
                     "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderFloatKey"
                 },
                 {
                     "Min": 0,
                     "Max": 100,
-                    "Value": 10,
+                    "Value": 8,
                     "Name": "LerpStrength",
-                    "Description": "Interpret as having \"0.\" in front of your value. If set to 100, will not lerp and will just be set to Horse Horizontal Position.",
+                    "Description": "Interpret as having \"0.\" in front of your value. If set to 100, will not lerp and will just be set to \"Horse Horizontal Position\".",
                     "$version": "v1",
                     "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderIntKey"
                 }
@@ -118,7 +95,7 @@
                     "Max": 100.0,
                     "Value": 50.0,
                     "Name": "MaxJumpHeight",
-                    "Description": "How far horse can go up from the Down Position. Horse will never go above the set Center Position.",
+                    "Description": "How far horse can go up from the Down Position. Horse will never go above the set \"Horse Center Position\".",
                     "$version": "v1",
                     "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderFloatKey"
                 },
@@ -165,7 +142,7 @@
                         "ExponentialEaseInOut",
                         "Linear"
                     ],
-                    "Value": 1,
+                    "Value": 16,
                     "Name": "JumpUpEasing",
                     "Description": "The easing function used when jumping upwards.",
                     "$version": "v1",
@@ -196,9 +173,9 @@
                         "ExponentialEaseInOut",
                         "Linear"
                     ],
-                    "Value": 1,
+                    "Value": 16,
                     "Name": "JumpDownEasing",
-                    "Description": "The easing function used when jumping upwards.",
+                    "Description": "The easing function used when jumping downwards.",
                     "$version": "v1",
                     "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.MultipleChoiceKey"
                 }
