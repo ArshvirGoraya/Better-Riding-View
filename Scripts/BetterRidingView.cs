@@ -56,6 +56,8 @@ namespace BetterRidingViewMod
         float camera_angle_x = 0;
         float normalized_angle_x = 0;
         public static float horse_texture_offset_y = 0;
+        // * Teleport Fix:
+        public bool enable_horse_horizontal_positioning = true;
 ////////////////////////////////////////////////////////////////////////////////
         private static Mod mod;
         Rect screenRect;
@@ -99,12 +101,15 @@ namespace BetterRidingViewMod
             StreamingWorld.OnTeleportToCoordinates += Teleported;
         }
         private void Teleported(DFPosition worldPos){
-            Debug.Log($"teleported on horse: {worldPos}");
-            // horse_horizontal_position = horse_horizontal_position_target;
-            // if (!GameManager.Instance.TransportManager.IsOnFoot){
-            //     Debug.Log($"teleported on horse: {worldPos}");
-            //     horse_horizontal_position = horse_horizontal_position_target;
-            // }
+            if (!GameManager.Instance.TransportManager.IsOnFoot){
+                enable_horse_horizontal_positioning = false; // * disables horizontal positioning for a second.
+                Invoke(nameof(EnableHorizontalPositioning), 0.5f); // * If there is a event for after player is fully telported (roptated), use that instead.
+                previous_camera_y_angle = gameObjectPlayerAdvanced.transform.eulerAngles.y;
+                horse_horizontal_position = horse_horizontal_position_target;
+            }
+        }
+        private void EnableHorizontalPositioning(){
+            enable_horse_horizontal_positioning = true;
         }
 ////////////////////////////////////////////////////////////////////////////////
         public static float NormalizeValue(float value, float min, float max){
@@ -207,17 +212,20 @@ namespace BetterRidingViewMod
                 }
             }
             // * Dynamic Horizontal Positioning
-            if (horizontal_lerp_strength < 1){
-                float camera_horizontal_diff = GetYRotationDifference();
+            if (enable_horse_horizontal_positioning){
+                if (horizontal_lerp_strength < 1){
+                    float camera_horizontal_diff = GetYRotationDifference();
+                    previous_camera_y_angle = gameObjectPlayerAdvanced.transform.eulerAngles.y;
+                    horse_horizontal_position += camera_horizontal_diff;
+                    horse_horizontal_position = Mathf.Lerp(
+                        horse_horizontal_position,
+                        horse_horizontal_position_target,
+                        horizontal_lerp_strength
+                    );
+                }
+            }else{
                 previous_camera_y_angle = gameObjectPlayerAdvanced.transform.eulerAngles.y;
-                horse_horizontal_position += camera_horizontal_diff;
-                horse_horizontal_position = Mathf.Lerp(
-                    horse_horizontal_position,
-                    horse_horizontal_position_target,
-                    horizontal_lerp_strength
-                );
             }
-
         }
         // * Mimics the OnGUI method inside of TransportManager.cs, with some additions to allow dynamic horse positioning.
         void OnGUI(){
