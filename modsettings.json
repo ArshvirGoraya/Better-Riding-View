@@ -173,7 +173,7 @@
                         "ExponentialEaseInOut",
                         "Linear"
                     ],
-                    "Value": 16,
+                    "Value": 1,
                     "Name": "JumpDownEasing",
                     "Description": "The easing function used when jumping downwards.",
                     "$version": "v1",

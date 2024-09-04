@@ -4,12 +4,13 @@
     "ModAuthor": "Arshvir Goraya",
     "ContactInfo": "arshvir.dev@gmail.com",
     "DFUnity_Version": "1.1.0",
-    "ModDescription": "When looking up, horse's head will not move up with you. ",
+    "ModDescription": "Provides a better and customizable view when riding a horse/cart.\r",
     "GUID": "ec12235e-22f9-41b1-90b8-1cf4409fdb6e",
     "Files": [
         "Assets/Game/Mods/BetterRidingView/Scripts/BetterRidingView.cs",
         "Assets/Game/Mods/BetterRidingView/modpresets.json",
         "Assets/Game/Mods/BetterRidingView/modsettings.json",
-        "Assets/Game/Mods/BetterRidingView/Scripts/BetterRidingViewEasing.cs"
+        "Assets/Game/Mods/BetterRidingView/Scripts/BetterRidingViewEasing.cs",
+        "Assets/Game/Mods/BetterRidingView/BetterRidingView.dfmod.json"
     ]
 }

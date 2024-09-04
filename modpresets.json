@@ -13,14 +13,6 @@
                 "HorseDownPosition": "-400",
                 "HorseDownAngle": "40"
             },
-            "CenterPositioning": {
-                "HorseCenterPosition": "0",
-                "HorseCenterAngle": "-10"
-            },
-            "DownPositioning": {
-                "HorseDownPosition": "-400",
-                "HorseDownAngle": "40"
-            },
             "HorizontalPositioning": {
                 "HorseHorizontalPosition": "0",
                 "HorseHorizontalPositioning": "True",
@@ -34,7 +26,7 @@
                 "JumpDownTime": "0.5",
                 "JumpUpEasing": "16",
                 "JumpDownEasingFunction": "0",
-                "JumpDownEasing": "16"
+                "JumpDownEasing": "1"
             }
         },
         "$version": "v1"
@@ -50,14 +42,6 @@
                 "DynamicHorseJumping": "True",
                 "HorseCenterPosition": "0",
                 "HorseCenterAngle": "0",
-                "HorseDownPosition": "-400",
-                "HorseDownAngle": "90"
-            },
-            "CenterPositioning": {
-                "HorseCenterPosition": "0",
-                "HorseCenterAngle": "0"
-            },
-            "DownPositioning": {
                 "HorseDownPosition": "-400",
                 "HorseDownAngle": "90"
             },
@@ -93,14 +77,6 @@
                 "HorseDownPosition": "-400",
                 "HorseDownAngle": "40"
             },
-            "CenterPositioning": {
-                "HorseCenterPosition": "-60",
-                "HorseCenterAngle": "-20"
-            },
-            "DownPositioning": {
-                "HorseDownPosition": "-400",
-                "HorseDownAngle": "40"
-            },
             "HorizontalPositioning": {
                 "HorseHorizontalPosition": "-80",
                 "HorseHorizontalPositioning": "True",
@@ -130,14 +106,6 @@
                 "DynamicHorseJumping": "True",
                 "HorseCenterPosition": "0",
                 "HorseCenterAngle": "-45",
-                "HorseDownPosition": "-400",
-                "HorseDownAngle": "7"
-            },
-            "CenterPositioning": {
-                "HorseCenterPosition": "0",
-                "HorseCenterAngle": "-45"
-            },
-            "DownPositioning": {
                 "HorseDownPosition": "-400",
                 "HorseDownAngle": "7"
             },
