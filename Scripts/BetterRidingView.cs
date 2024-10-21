@@ -105,6 +105,7 @@ namespace BetterRidingViewMod
             StreamingWorld.OnTeleportToCoordinates += Teleported;
         }
         private void Teleported(DFPosition worldPos){
+            if (horizontal_lerp_strength >= 1){ return; }
             if (!GameManager.Instance.TransportManager.IsOnFoot){
                 enable_horse_horizontal_positioning = false; // * disables horizontal positioning for a second.
                 Invoke(nameof(EnableHorizontalPositioning), 0.5f); // * If there is a event for after player is fully telported (rotated), use that instead.
@@ -134,6 +135,7 @@ namespace BetterRidingViewMod
             return diff;
         }
         public void EnteredRiding(){
+            if (horizontal_lerp_strength >= 1){ return; }
             previous_camera_y_angle = gameObjectPlayerAdvanced.transform.eulerAngles.y;
             horse_horizontal_position = horse_horizontal_position_target;
         }
