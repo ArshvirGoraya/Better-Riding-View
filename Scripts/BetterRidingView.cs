@@ -31,6 +31,7 @@ namespace BetterRidingViewMod
         // * Dynamic Jumping
         public static bool dynamic_horse_jumping = true;
         public static float max_horse_jump_height = 0;
+        public static float random_jump_height_range_value = 1;
         public static float horse_jump_up_time = 0;
         public static float horse_jump_down_time = 0;
         public static int easing_up_function_num = 0;
@@ -83,6 +84,7 @@ namespace BetterRidingViewMod
             // * Jumping:
             dynamic_horse_jumping = modSettings.GetBool("DynamicJumping", "DynamicHorseJumping");
             max_horse_jump_height = modSettings.GetFloat("DynamicJumping", "MaxJumpHeight");
+            // random_jump_height_range_value = modSettings.GetFloat("DynamicJumping", "RandomJumpHeightRange");
             horse_jump_up_time = modSettings.GetFloat("DynamicJumping", "JumpUpTime");
             horse_jump_down_time = modSettings.GetFloat("DynamicJumping", "JumpDownTime");
             easing_up_function_num = modSettings.GetInt("DynamicJumping", "JumpUpEasing");
@@ -103,7 +105,7 @@ namespace BetterRidingViewMod
         private void Teleported(DFPosition worldPos){
             if (!GameManager.Instance.TransportManager.IsOnFoot){
                 enable_horse_horizontal_positioning = false; // * disables horizontal positioning for a second.
-                Invoke(nameof(EnableHorizontalPositioning), 0.5f); // * If there is a event for after player is fully telported (roptated), use that instead.
+                Invoke(nameof(EnableHorizontalPositioning), 0.5f); // * If there is a event for after player is fully telported (rotated), use that instead.
                 previous_camera_y_angle = gameObjectPlayerAdvanced.transform.eulerAngles.y;
                 horse_horizontal_position = horse_horizontal_position_target;
             }
@@ -167,6 +169,7 @@ namespace BetterRidingViewMod
             if (!GameManager.Instance.StateManager.GameInProgress || GameManager.IsGamePaused){
                 return;
             }
+            // * If On Horse:
             if (previous_on_foot && !GameManager.Instance.TransportManager.IsOnFoot){
                 EnteredRiding();
             }
@@ -174,10 +177,27 @@ namespace BetterRidingViewMod
             if (GameManager.Instance.TransportManager.IsOnFoot){
                 return;
             }
+            // * Dynamic Horizontal Positioning
+            if (enable_horse_horizontal_positioning){
+                if (horizontal_lerp_strength < 1){
+                    float camera_horizontal_diff = GetYRotationDifference();
+                    previous_camera_y_angle = gameObjectPlayerAdvanced.transform.eulerAngles.y;
+                    horse_horizontal_position += camera_horizontal_diff;
+                    horse_horizontal_position = Mathf.Lerp(
+                        horse_horizontal_position,
+                        horse_horizontal_position_target,
+                        horizontal_lerp_strength
+                    );
+                }
+            }else{
+                previous_camera_y_angle = gameObjectPlayerAdvanced.transform.eulerAngles.y;
+            }
+            // * If Have Dynamic Vertical Positioning:
             if (!horse_vertical_positioning){
                 horse_texture_offset_y = horse_center_position;
                 return;
             }
+            // * Dynamic Jumping:
             if (dynamic_horse_jumping){
                 if (on_ground){
                     if ((GameManager.Instance.AcrobatMotor.Jumping || GameManager.Instance.AcrobatMotor.Falling)){
@@ -195,7 +215,7 @@ namespace BetterRidingViewMod
                     }
                 }
             }
-            
+            // * Jump Tweening:
             if (horse_tween_type == HorseTweenType.None){
                 horse_texture_offset_y = GetHorseTextureOffset();
             }
@@ -205,26 +225,11 @@ namespace BetterRidingViewMod
                     horse_texture_offset_y = IncrementTweenUp();
                 }else{
                     horse_texture_offset_y = IncrementTweenDown();
-                    // * End jump easing easing.
+                    // * End Jump Tweening:
                     if (tween_elapsed_time >= horse_jump_down_time){
                         horse_tween_type = HorseTweenType.None;
                     }
                 }
-            }
-            // * Dynamic Horizontal Positioning
-            if (enable_horse_horizontal_positioning){
-                if (horizontal_lerp_strength < 1){
-                    float camera_horizontal_diff = GetYRotationDifference();
-                    previous_camera_y_angle = gameObjectPlayerAdvanced.transform.eulerAngles.y;
-                    horse_horizontal_position += camera_horizontal_diff;
-                    horse_horizontal_position = Mathf.Lerp(
-                        horse_horizontal_position,
-                        horse_horizontal_position_target,
-                        horizontal_lerp_strength
-                    );
-                }
-            }else{
-                previous_camera_y_angle = gameObjectPlayerAdvanced.transform.eulerAngles.y;
             }
         }
         // * Mimics the OnGUI method inside of TransportManager.cs, with some additions to allow dynamic horse positioning.
@@ -260,7 +265,7 @@ namespace BetterRidingViewMod
                         GameManager.Instance.TransportManager.RidingTexture.height * horseScaleY
                     );
 ////////////////////////////////////////////////////////////////////////////////
-                    DaggerfallUI.DrawTexture(pos, GameManager.Instance.TransportManager.RidingTexture.texture, ScaleMode.StretchToFill, true, GameManager.Instance.TransportManager.Tint);    
+                    DaggerfallUI.DrawTexture(pos, GameManager.Instance.TransportManager.RidingTexture.texture, ScaleMode.StretchToFill, true, GameManager.Instance.TransportManager.Tint);
                 }
             }
         }
