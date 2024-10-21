@@ -59,6 +59,8 @@ namespace BetterRidingViewMod
         public static float horse_texture_offset_y = 0;
         // * Teleport Fix:
         public bool enable_horse_horizontal_positioning = true;
+        // * Randomized Horse Jumping:
+        public float max_horse_random_jump_height = 0;
 ////////////////////////////////////////////////////////////////////////////////
         private static Mod mod;
         Rect screenRect;
@@ -84,7 +86,7 @@ namespace BetterRidingViewMod
             // * Jumping:
             dynamic_horse_jumping = modSettings.GetBool("DynamicJumping", "DynamicHorseJumping");
             max_horse_jump_height = modSettings.GetFloat("DynamicJumping", "MaxJumpHeight");
-            // random_jump_height_range_value = modSettings.GetFloat("DynamicJumping", "RandomJumpHeightRange");
+            random_jump_height_range_value = modSettings.GetFloat("DynamicJumping", "RandomJumpHeightRange");
             horse_jump_up_time = modSettings.GetFloat("DynamicJumping", "JumpUpTime");
             horse_jump_down_time = modSettings.GetFloat("DynamicJumping", "JumpDownTime");
             easing_up_function_num = modSettings.GetInt("DynamicJumping", "JumpUpEasing");
@@ -136,15 +138,27 @@ namespace BetterRidingViewMod
             horse_horizontal_position = horse_horizontal_position_target;
         }
 ////////////////////////////////////////////////////////////////////////////////
+        public float GetMaxHorseJumpHeight(){
+            if (random_jump_height_range_value == 1f){
+                return max_horse_jump_height;
+            }
+            float working_center_position = GetValueFromNormalize(random_jump_height_range_value, horse_center_position, max_horse_jump_height); // * Min Value
+            float random_jump_height = GetValueFromNormalize(
+                UnityEngine.Random.Range(0f, 1f),
+                working_center_position, 
+                max_horse_jump_height
+            );
+            return (float) Math.Ceiling(random_jump_height);
+        }
         public float GetHorseTextureOffset(){
             camera_angle_x = -NormalizeTo180Angle(GameManager.Instance.MainCamera.transform.eulerAngles.x);
             camera_angle_x = Mathf.Clamp(camera_angle_x, horse_center_angle, horse_down_angle);
             normalized_angle_x = NormalizeValue(camera_angle_x, horse_center_angle, horse_down_angle);
             return GetValueFromNormalize(normalized_angle_x, horse_center_position, horse_down_position);
         }
-        float IncrementTweenUp(){
+        float IncrementTweenUp(float max_jump_height){
             float start_val = GetHorseTextureOffset();
-            float target_val = Mathf.Min(horse_center_position, start_val + max_horse_jump_height);
+            float target_val = Mathf.Min(horse_center_position, start_val + max_jump_height);
             if (tween_elapsed_time > horse_jump_up_time) tween_elapsed_time = horse_jump_up_time;
             current_tween_value = GetValueFromNormalize(
                 BetterRidingViewEasing.Interpolate(NormalizeValue(tween_elapsed_time, 0, horse_jump_up_time), easing_up_function_num),
@@ -202,6 +216,7 @@ namespace BetterRidingViewMod
                 if (on_ground){
                     if ((GameManager.Instance.AcrobatMotor.Jumping || GameManager.Instance.AcrobatMotor.Falling)){
                         // * Just Jumped
+                        max_horse_random_jump_height = GetMaxHorseJumpHeight();
                         horse_tween_type = HorseTweenType.TweenUp;
                         on_ground = false;
                         tween_elapsed_time = 0;
@@ -222,7 +237,7 @@ namespace BetterRidingViewMod
             else{
                 tween_elapsed_time += Time.deltaTime;
                 if (horse_tween_type == HorseTweenType.TweenUp){
-                    horse_texture_offset_y = IncrementTweenUp();
+                    horse_texture_offset_y = IncrementTweenUp(max_horse_random_jump_height);
                 }else{
                     horse_texture_offset_y = IncrementTweenDown();
                     // * End Jump Tweening:

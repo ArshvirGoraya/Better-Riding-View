@@ -3,7 +3,7 @@
         "Title": "Immersive",
         "Author": "Arshvir Goraya",
         "Description": "What feels the most immersive (for me on 1920x1080 screen size).",
-        "SettingsVersion": "1.0.0",
+        "SettingsVersion": "1.1.0",
         "Values": {
             "VerticalPositioning": {
                 "VerticalPositioning": "True",
@@ -26,7 +26,8 @@
                 "JumpDownTime": "0.5",
                 "JumpUpEasing": "16",
                 "JumpDownEasingFunction": "0",
-                "JumpDownEasing": "1"
+                "JumpDownEasing": "1",
+                "RandomJumpHeightRange": "0.4"
             }
         },
         "$version": "v1"
@@ -35,7 +36,7 @@
         "Title": "Default",
         "Author": "Arshvir Goraya",
         "Description": "Base preset from which you can make your own. \n\nMod is set to \"immersive\" preset when installed.",
-        "SettingsVersion": "1.0.0",
+        "SettingsVersion": "1.1.0",
         "Values": {
             "VerticalPositioning": {
                 "VerticalPositioning": "True",
@@ -58,7 +59,8 @@
                 "JumpDownTime": "0.5",
                 "JumpUpEasing": "21",
                 "JumpDownEasingFunction": "0",
-                "JumpDownEasing": "21"
+                "JumpDownEasing": "21",
+                "RandomJumpHeightRange": "1"
             }
         },
         "$version": "v1"
@@ -67,7 +69,7 @@
         "Title": "Small Horse",
         "Author": "Arshvir Goraya",
         "Description": "Gives the feeling of riding a smaller horse (on 1920x1080 screen size).",
-        "SettingsVersion": "1.0.0",
+        "SettingsVersion": "1.1.0",
         "Values": {
             "VerticalPositioning": {
                 "VerticalPositioning": "True",
@@ -90,7 +92,8 @@
                 "JumpDownTime": "0.5",
                 "JumpUpEasing": "13",
                 "JumpDownEasingFunction": "0",
-                "JumpDownEasing": "16"
+                "JumpDownEasing": "16",
+                "RandomJumpHeightRange": "0.4"
             }
         },
         "$version": "v1"
@@ -99,7 +102,7 @@
         "Title": "When Looking Down",
         "Author": "Arshvir Goraya",
         "Description": "Shows horse only when looking down (on 1920x1080 screen size).",
-        "SettingsVersion": "1.0.0",
+        "SettingsVersion": "1.1.0",
         "Values": {
             "VerticalPositioning": {
                 "VerticalPositioning": "True",
@@ -122,7 +125,8 @@
                 "JumpDownTime": "0.5",
                 "JumpUpEasing": "1",
                 "JumpDownEasingFunction": "0",
-                "JumpDownEasing": "1"
+                "JumpDownEasing": "1",
+                "RandomJumpHeightRange": "0.4"
             }
         },
         "$version": "v1"

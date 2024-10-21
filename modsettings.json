@@ -1,5 +1,5 @@
 {
-    "Version": "1.0.0",
+    "Version": "1.1.0",
     "Sections": [
         {
             "Name": "VerticalPositioning",
@@ -96,6 +96,15 @@
                     "Value": 50.0,
                     "Name": "MaxJumpHeight",
                     "Description": "How far horse can go up from the Down Position. Horse will never go above the set \"Horse Center Position\".",
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderFloatKey"
+                },
+                {
+                    "Min": 0.0,
+                    "Max": 1.0,
+                    "Value": 0.4,
+                    "Name": "RandomJumpHeightRange",
+                    "Description": "Selects a random number from 1.0 (maximum jump height) to selected value. If value is 1.0, jump will always be at maximum. ",
                     "$version": "v1",
                     "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderFloatKey"
                 },
