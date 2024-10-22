@@ -18,6 +18,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using DaggerfallWorkshop.Game.Serialization;
 using DaggerfallConnect.Utility;
 using static DaggerfallWorkshop.Game.PlayerEnterExit;
+using System.Reflection;
 
 namespace BetterRidingViewMod
 {
@@ -62,6 +63,14 @@ namespace BetterRidingViewMod
         public bool enable_horse_horizontal_positioning = true;
         // * Randomized Horse Jumping:
         public float max_horse_random_jump_height = 0;
+        // * Public Variables for Mod Support: 
+        public bool better_riding_view_draw_horse = true;
+        // * Eye Of the Beholder Support:
+        Component eye_of_the_beholder_component;
+        bool eye_of_the_beholder_current_offset;
+        bool eye_of_the_beholder_previous_offset;
+        FieldInfo eye_of_the_beholder_offset;
+        GameObject eye_of_the_beholder;
 ////////////////////////////////////////////////////////////////////////////////
         private static Mod mod;
         Rect screenRect;
@@ -98,13 +107,47 @@ namespace BetterRidingViewMod
             if (horizontal_lerp_strength < 1){
                 horse_horizontal_position = horse_horizontal_position_target;
             }
+            // * Mod Support: 
+            // foreach (string item in ModManager.Instance.GetAllModTitles()){
+            //     Debug.Log($"all mods: {item}");
+            // }
+            // * Eye of the Beholder:
+            // var EyeOfTheBeholderMod = ModManager.Instance.GetModFromGUID("2942ea8c-dbd4-42af-bdf9-8199d2f4a0aa");
         }
+
         private void Start(){
             GameManager.Instance.TransportManager.DrawHorse = false;
             previous_on_foot = GameManager.Instance.TransportManager.IsOnFoot;
             gameObjectPlayerAdvanced = GameObject.Find("PlayerAdvanced");
             StreamingWorld.OnTeleportToCoordinates += Teleported;
             PlayerEnterExit.OnTransitionExterior += ExteriorTransition;
+
+
+            eye_of_the_beholder = GameObject.Find("Eye Of The Beholder");
+            if (eye_of_the_beholder == null){
+                Debug.Log($"eye_of_the_beholder is Null");
+            }else{
+                Debug.Log($"eye_of_the_beholder found: {eye_of_the_beholder}");
+                Component[] components = eye_of_the_beholder.GetComponents<Component>();
+                foreach (Component component in components){
+                    Type type = component.GetType();
+                    Debug.Log($"Component type: {type}");
+                    if (type.ToString() == "EyeOfTheBeholder"){
+                       eye_of_the_beholder_component = component; 
+                       Debug.Log($"eye_of_the_beholder_component: {eye_of_the_beholder_component}");
+
+                        FieldInfo fieldInfo = type.GetField("offset", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                        PropertyInfo propertyInfo = type.GetProperty("offset", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                        if (fieldInfo != null){
+                            eye_of_the_beholder_offset = fieldInfo;
+                            Debug.Log($"offset field: {eye_of_the_beholder_offset}");
+                            Debug.Log($"field value: {eye_of_the_beholder_offset.GetValue(eye_of_the_beholder_component)}");
+                            eye_of_the_beholder_previous_offset = (bool) eye_of_the_beholder_offset.GetValue(eye_of_the_beholder_component);
+                            eye_of_the_beholder_current_offset = eye_of_the_beholder_previous_offset;
+                        }
+                    }
+                }
+            }
         }
         private void Teleported(DFPosition worldPos){
             // * If teleported triggered AFTER camera rotation, then can just to like ExteriorTransition() function instead.
@@ -194,6 +237,15 @@ namespace BetterRidingViewMod
             if (!GameManager.Instance.StateManager.GameInProgress || GameManager.IsGamePaused){
                 return;
             }
+            // * Eye of the beholder support:
+            if (eye_of_the_beholder != null){
+                if ((bool) eye_of_the_beholder_offset.GetValue(eye_of_the_beholder_component)){
+                    better_riding_view_draw_horse = false;
+                }else{
+                    better_riding_view_draw_horse = true;
+                    GameManager.Instance.TransportManager.DrawHorse = false;
+                }
+            }
             // * If On Horse:
             if (previous_on_foot && !GameManager.Instance.TransportManager.IsOnFoot){
                 EnteredRiding();
@@ -260,9 +312,7 @@ namespace BetterRidingViewMod
         }
         // * Mimics the OnGUI method inside of TransportManager.cs, with some additions to allow dynamic horse positioning.
         void OnGUI(){
-            if (!GameManager.Instance.StateManager.GameInProgress){
-                return;
-            }
+            if (!GameManager.Instance.StateManager.GameInProgress || better_riding_view_draw_horse == false){ return; }
             if (Event.current.type.Equals(EventType.Repaint)){
                 if (GameManager.Instance.TransportManager.IsOnFoot){
                     return;

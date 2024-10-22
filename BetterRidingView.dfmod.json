@@ -12,5 +12,12 @@
         "Assets/Game/Mods/BetterRidingView/modsettings.json",
         "Assets/Game/Mods/BetterRidingView/Scripts/BetterRidingViewEasing.cs",
         "Assets/Game/Mods/BetterRidingView/BetterRidingView.dfmod.json"
+    ],
+    "Dependencies": [
+        {
+            "Name": "eye of the beholder",
+            "IsOptional": true,
+            "IsPeer": false
+        }
     ]
 }
