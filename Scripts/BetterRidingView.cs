@@ -65,13 +65,19 @@ namespace BetterRidingViewMod
         public float max_horse_random_jump_height = 0;
         // * Public Variables for Mod Support: 
         public static bool better_riding_view_draw_horse = true;
-        // * Eye Of the Beholder Support:
+        // * Eye of the Beholder Compatbility:
         // ModManager.Instance.GetModFromGUID("2942ea8c-dbd4-42af-bdf9-8199d2f4a0aa");
         Component eye_of_the_beholder_component;
         bool eye_of_the_beholder_current_offset;
         bool eye_of_the_beholder_previous_offset;
         FieldInfo eye_of_the_beholder_offset;
         GameObject eye_of_the_beholder;
+        // * Roleplay and Realism Compatibility:
+        GameObject roleplay_and_realism;
+        private int previous_texture_index = -1;
+        public ImageData riding_texture;
+        public Texture2D riding_horse_texture = null;
+
 ////////////////////////////////////////////////////////////////////////////////
         private static Mod mod;
         Rect screenRect;
@@ -126,15 +132,15 @@ namespace BetterRidingViewMod
             StreamingWorld.OnTeleportToCoordinates += Teleported;
             PlayerEnterExit.OnTransitionExterior += ExteriorTransition;
 
+            // * Eye of the Beholder Compatbility:
             eye_of_the_beholder = GameObject.Find("Eye Of The Beholder");
             if (eye_of_the_beholder != null){
                 Component[] components = eye_of_the_beholder.GetComponents<Component>();
                 foreach (Component component in components){
                     Type type = component.GetType();
                     if (type.ToString() == "EyeOfTheBeholder"){
-                       eye_of_the_beholder_component = component; 
+                        eye_of_the_beholder_component = component; 
                         FieldInfo fieldInfo = type.GetField("offset", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                        PropertyInfo propertyInfo = type.GetProperty("offset", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
                         if (fieldInfo != null){
                             eye_of_the_beholder_offset = fieldInfo;
                             eye_of_the_beholder_previous_offset = (bool) eye_of_the_beholder_offset.GetValue(eye_of_the_beholder_component);
@@ -143,6 +149,47 @@ namespace BetterRidingViewMod
                     }
                 }
             }
+
+            // * Roleplay and Realism Compatibility:
+            roleplay_and_realism = GameObject.Find("RoleplayRealism");
+            riding_texture = GameManager.Instance.TransportManager.RidingTexture;
+            // FieldInfo propertyInf = GameManager.Instance.TransportManager.GetType().GetField("ridingTexures", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            // // PropertyInfo propertyInf = rtype.GetProperty("ridingTexures", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            // Debug.Log($"propertyInf: {propertyInf}");
+            // ImageData[] ridingTextureInstance = (ImageData[]) propertyInf.GetValue(GameManager.Instance.TransportManager);
+            // Debug.Log($"property object: {ridingTextureInstance}");
+            // ImageData[] bruh = ridingTextureInstance;
+            // propertyInf.SetValue(GameManager.Instance.TransportManager, new ImageData[4]);
+            // Debug.Log($"-> before: riding_horse_texture value: {bruh != null}");
+            // riding_texture = GameManager.Instance.TransportManager.RidingTexture;
+
+            // FieldInfo nestedFieldInfo = ridingTextureInstance.GetType().GetField("texture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            // Debug.Log($"nestedFieldInfo: {nestedFieldInfo}");
+
+            // Debug.Log($"-> initial: riding_horse_texture value: {riding_horse_texture != null}");
+            // riding_horse_texture = (Texture2D) nestedFieldInfo.GetValue(GameManager.Instance.TransportManager.RidingTexture);
+            // riding_horse_texture = (Texture2D) nestedFieldInfo.GetValue(ridingTextureInstance);
+            // object bruh = nestedFieldInfo.GetValue(ridingTextureInstance);
+            // Debug.Log($"-> before: riding_horse_texture value: {bruh != null}");
+
+            // Debug.Log($"-> after null: riding_horse_texture value: {riding_horse_texture.GetPixels().Length}");
+
+            // nestedFieldInfo.SetValue(ridingTextureInstance, null);
+            // Debug.Log($"-> riding_horse_texture value: {riding_horse_texture}");
+            
+
+            // ImageData ridingTextureInstance = (ImageData) propertyInf.GetValue(rtype);
+            // Texture2D horse_texture_clone = ridingTextureInstance.texture;
+            // ridingTextureInstance.texture = null;
+
+            
+            // Debug.Log($"propertyInf: {propertyInf}");
+            // Debug.Log($"riding_texture: {riding_texture}");
+            // propertyInf.SetValue(GameManager.Instance.TransportManager, null);
+            // Debug.Log($"riding_texture after setting to null: {riding_texture}");
+            
+            // GameManager.Instance.TransportManager.RidingTexture = null;
+            // PropertyInfo propertyInf = TransportManager.GetProperty("RidingTexture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
         }
         private void Teleported(DFPosition worldPos){
             // * If teleported triggered AFTER camera rotation, then can just to like ExteriorTransition() function instead.
@@ -228,11 +275,65 @@ namespace BetterRidingViewMod
             return Mathf.Min(horse_center_position, current_tween_value);
         }
 ////////////////////////////////////////////////////////////////////////////////
+        private void Update(){
+            if (!GameManager.Instance.StateManager.GameInProgress || GameManager.IsGamePaused || GameManager.Instance.TransportManager.IsOnFoot){
+                return;
+            }
+            // // * Roleplay and Realism Compatibility:
+            // if (previous_texture_index != GameManager.Instance.TransportManager.FrameIndex){
+            //     previous_texture_index = GameManager.Instance.TransportManager.FrameIndex;
+            //     Debug.Log($"horse texture changed");
+            //     // * Make ridingTexture null:
+            // }
+            
+            // ImageData horse_image_data = (ImageData) GameManager.Instance.TransportManager.GetType().GetField("ridingTexture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).GetValue(GameManager.Instance.TransportManager);
+            // GameManager.Instance.TransportManager.GetType().GetField("ridingTexture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).GetValue(GameManager.Instance.TransportManager).GetType().GetField("texture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField).SetValue(
+            //     GameManager.Instance.TransportManager.GetType().GetField("ridingTexture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).GetValue(GameManager.Instance.TransportManager), 
+            //     null);
+            // Debug.Log($"texture is null: {GameManager.Instance.TransportManager.RidingTexture.texture == null}");
+            
+            // Texture2D horse_image_data_texture = (Texture2D) 
+            // horse_image_data.texture = null;
+
+            // FieldInfo horse_image_data_field = GameManager.Instance.TransportManager.GetType().GetField("ridingTexture");
+            // var horse_image_data_instance = horse_image_data_field.GetValue(GameManager.Instance.TransportManager);
+
+            // ImageData horse_image_data = (ImageData) GameManager.Instance.TransportManager.GetType().GetField("ridingTexture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).GetValue(GameManager.Instance.TransportManager);
+            // Texture2D horse_image_data_texture = (Texture2D) horse_image_data.GetType().GetField("texture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).GetValue(horse_image_data);
+
+            // if (horse_image_data_texture == null){
+            //     Debug.Log($"horse_image_data_texture: null");
+            // }else{
+            //     Debug.Log($"horse_image_data_texture: {horse_image_data_texture}");
+            //     riding_texture.texture = horse_image_data_texture;
+            // }
+            // // 
+            // try {
+            //     horse_image_data.GetType().GetField("texture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).SetValue(horse_image_data, null);
+            // } catch(Exception ex) {
+            //     Debug.Log($"Failed to set horse texture to null with exception: {ex}");
+            // }
+
+            // Nullable<ImageData> temp_riding_texture = (Nullable<ImageData>) GameManager.Instance.TransportManager.GetType().GetField("ridingTexture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).GetValue(GameManager.Instance.TransportManager);
+            // if (temp_riding_texture != null){
+            //     ImageData temp_riding_texture_r = (ImageData) temp_riding_texture;
+            //     if (!temp_riding_texture_r.filename.Equals("")){
+            //         riding_texture = temp_riding_texture_r;
+            //         Debug.Log($"riding_texture set to: {riding_texture.filename}");
+            //     }
+                
+            // }
+            // try {
+            //     GameManager.Instance.TransportManager.GetType().GetField("ridingTexture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).SetValue(GameManager.Instance.TransportManager, null);
+            // }catch(Exception ex){
+            //     Debug.Log($"Failed to set ridingTexture to null with exception: {ex}");
+            // }
+        }
         private void LateUpdate(){
             if (!GameManager.Instance.StateManager.GameInProgress || GameManager.IsGamePaused){
                 return;
             }
-            // * Eye of the beholder support: 
+            // * Eye of the Beholder Compatibility: 
             // TODO: If can listen for an event from the mod, that would be better than this.
             if (eye_of_the_beholder != null){
                 if ((bool) eye_of_the_beholder_offset.GetValue(eye_of_the_beholder_component)){
@@ -240,6 +341,17 @@ namespace BetterRidingViewMod
                 }else{
                     better_riding_view_draw_horse = true;
                     GameManager.Instance.TransportManager.DrawHorse = false;
+                }
+            }
+            // * Roleplay and Realism Compatibility:
+            if (roleplay_and_realism != null){
+                if (GameManager.Instance.TransportManager.RidingTexture.texture != null){
+                    riding_texture = GameManager.Instance.TransportManager.RidingTexture;
+                }
+                try {
+                    GameManager.Instance.TransportManager.GetType().GetField("ridingTexture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).SetValue(GameManager.Instance.TransportManager, null);
+                }catch(Exception ex){
+                    Debug.Log($"Failed to set ridingTexture to null with exception: {ex}");
                 }
             }
             // * If On Horse:
@@ -313,7 +425,7 @@ namespace BetterRidingViewMod
                 if (GameManager.Instance.TransportManager.IsOnFoot){
                     return;
                 }
-                if (GameManager.Instance.TransportManager.RidingTexture.texture != null){
+                if (riding_texture.texture != null){
                     if (DaggerfallUI.Instance.CustomScreenRect != null){ screenRect = DaggerfallUI.Instance.CustomScreenRect.Value; }
                     else{ screenRect = new Rect(0, 0, Screen.width, Screen.height); }
                     GUI.depth = 2;
@@ -331,13 +443,13 @@ namespace BetterRidingViewMod
                     horseOffsetHeight += horse_texture_offset_y;
                     horseOffsetWidth += horse_horizontal_position;
                     Rect pos = new Rect(
-                        screenRect.x + screenRect.width / 2f - (GameManager.Instance.TransportManager.RidingTexture.width * horseScaleX) / 2f + horseOffsetWidth,
-                        screenRect.y + screenRect.height - (GameManager.Instance.TransportManager.RidingTexture.height * horseScaleY) - horseOffsetHeight,
-                        GameManager.Instance.TransportManager.RidingTexture.width * horseScaleX,
-                        GameManager.Instance.TransportManager.RidingTexture.height * horseScaleY
+                        screenRect.x + screenRect.width / 2f - (riding_texture.width * horseScaleX) / 2f + horseOffsetWidth,
+                        screenRect.y + screenRect.height - (riding_texture.height * horseScaleY) - horseOffsetHeight,
+                        riding_texture.width * horseScaleX,
+                        riding_texture.height * horseScaleY
                     );
 ////////////////////////////////////////////////////////////////////////////////
-                    DaggerfallUI.DrawTexture(pos, GameManager.Instance.TransportManager.RidingTexture.texture, ScaleMode.StretchToFill, true, GameManager.Instance.TransportManager.Tint);
+                    DaggerfallUI.DrawTexture(pos, riding_texture.texture, ScaleMode.StretchToFill, true, GameManager.Instance.TransportManager.Tint);
                 }
             }
         }
