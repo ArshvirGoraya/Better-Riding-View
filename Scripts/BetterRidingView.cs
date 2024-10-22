@@ -10,12 +10,7 @@ using DaggerfallWorkshop.Game;
 using DaggerfallWorkshop.Game.Utility.ModSupport;
 using DaggerfallWorkshop;
 using DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings;
-using DaggerfallWorkshop.Game.UserInterface;
-using System.Collections.Generic;
 using System;
-using __ExternalAssets;
-using System.Runtime.InteropServices.WindowsRuntime;
-using DaggerfallWorkshop.Game.Serialization;
 using DaggerfallConnect.Utility;
 using static DaggerfallWorkshop.Game.PlayerEnterExit;
 using System.Reflection;
@@ -74,10 +69,7 @@ namespace BetterRidingViewMod
         GameObject eye_of_the_beholder;
         // * Roleplay and Realism Compatibility:
         GameObject roleplay_and_realism;
-        private int previous_texture_index = -1;
         public ImageData riding_texture;
-        public Texture2D riding_horse_texture = null;
-
 ////////////////////////////////////////////////////////////////////////////////
         private static Mod mod;
         Rect screenRect;
@@ -153,43 +145,6 @@ namespace BetterRidingViewMod
             // * Roleplay and Realism Compatibility:
             roleplay_and_realism = GameObject.Find("RoleplayRealism");
             riding_texture = GameManager.Instance.TransportManager.RidingTexture;
-            // FieldInfo propertyInf = GameManager.Instance.TransportManager.GetType().GetField("ridingTexures", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            // // PropertyInfo propertyInf = rtype.GetProperty("ridingTexures", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            // Debug.Log($"propertyInf: {propertyInf}");
-            // ImageData[] ridingTextureInstance = (ImageData[]) propertyInf.GetValue(GameManager.Instance.TransportManager);
-            // Debug.Log($"property object: {ridingTextureInstance}");
-            // ImageData[] bruh = ridingTextureInstance;
-            // propertyInf.SetValue(GameManager.Instance.TransportManager, new ImageData[4]);
-            // Debug.Log($"-> before: riding_horse_texture value: {bruh != null}");
-            // riding_texture = GameManager.Instance.TransportManager.RidingTexture;
-
-            // FieldInfo nestedFieldInfo = ridingTextureInstance.GetType().GetField("texture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            // Debug.Log($"nestedFieldInfo: {nestedFieldInfo}");
-
-            // Debug.Log($"-> initial: riding_horse_texture value: {riding_horse_texture != null}");
-            // riding_horse_texture = (Texture2D) nestedFieldInfo.GetValue(GameManager.Instance.TransportManager.RidingTexture);
-            // riding_horse_texture = (Texture2D) nestedFieldInfo.GetValue(ridingTextureInstance);
-            // object bruh = nestedFieldInfo.GetValue(ridingTextureInstance);
-            // Debug.Log($"-> before: riding_horse_texture value: {bruh != null}");
-
-            // Debug.Log($"-> after null: riding_horse_texture value: {riding_horse_texture.GetPixels().Length}");
-
-            // nestedFieldInfo.SetValue(ridingTextureInstance, null);
-            // Debug.Log($"-> riding_horse_texture value: {riding_horse_texture}");
-            
-
-            // ImageData ridingTextureInstance = (ImageData) propertyInf.GetValue(rtype);
-            // Texture2D horse_texture_clone = ridingTextureInstance.texture;
-            // ridingTextureInstance.texture = null;
-
-            
-            // Debug.Log($"propertyInf: {propertyInf}");
-            // Debug.Log($"riding_texture: {riding_texture}");
-            // propertyInf.SetValue(GameManager.Instance.TransportManager, null);
-            // Debug.Log($"riding_texture after setting to null: {riding_texture}");
-            
-            // GameManager.Instance.TransportManager.RidingTexture = null;
-            // PropertyInfo propertyInf = TransportManager.GetProperty("RidingTexture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
         }
         private void Teleported(DFPosition worldPos){
             // * If teleported triggered AFTER camera rotation, then can just to like ExteriorTransition() function instead.
@@ -275,60 +230,6 @@ namespace BetterRidingViewMod
             return Mathf.Min(horse_center_position, current_tween_value);
         }
 ////////////////////////////////////////////////////////////////////////////////
-        private void Update(){
-            if (!GameManager.Instance.StateManager.GameInProgress || GameManager.IsGamePaused || GameManager.Instance.TransportManager.IsOnFoot){
-                return;
-            }
-            // // * Roleplay and Realism Compatibility:
-            // if (previous_texture_index != GameManager.Instance.TransportManager.FrameIndex){
-            //     previous_texture_index = GameManager.Instance.TransportManager.FrameIndex;
-            //     Debug.Log($"horse texture changed");
-            //     // * Make ridingTexture null:
-            // }
-            
-            // ImageData horse_image_data = (ImageData) GameManager.Instance.TransportManager.GetType().GetField("ridingTexture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).GetValue(GameManager.Instance.TransportManager);
-            // GameManager.Instance.TransportManager.GetType().GetField("ridingTexture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).GetValue(GameManager.Instance.TransportManager).GetType().GetField("texture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField).SetValue(
-            //     GameManager.Instance.TransportManager.GetType().GetField("ridingTexture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).GetValue(GameManager.Instance.TransportManager), 
-            //     null);
-            // Debug.Log($"texture is null: {GameManager.Instance.TransportManager.RidingTexture.texture == null}");
-            
-            // Texture2D horse_image_data_texture = (Texture2D) 
-            // horse_image_data.texture = null;
-
-            // FieldInfo horse_image_data_field = GameManager.Instance.TransportManager.GetType().GetField("ridingTexture");
-            // var horse_image_data_instance = horse_image_data_field.GetValue(GameManager.Instance.TransportManager);
-
-            // ImageData horse_image_data = (ImageData) GameManager.Instance.TransportManager.GetType().GetField("ridingTexture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).GetValue(GameManager.Instance.TransportManager);
-            // Texture2D horse_image_data_texture = (Texture2D) horse_image_data.GetType().GetField("texture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).GetValue(horse_image_data);
-
-            // if (horse_image_data_texture == null){
-            //     Debug.Log($"horse_image_data_texture: null");
-            // }else{
-            //     Debug.Log($"horse_image_data_texture: {horse_image_data_texture}");
-            //     riding_texture.texture = horse_image_data_texture;
-            // }
-            // // 
-            // try {
-            //     horse_image_data.GetType().GetField("texture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).SetValue(horse_image_data, null);
-            // } catch(Exception ex) {
-            //     Debug.Log($"Failed to set horse texture to null with exception: {ex}");
-            // }
-
-            // Nullable<ImageData> temp_riding_texture = (Nullable<ImageData>) GameManager.Instance.TransportManager.GetType().GetField("ridingTexture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).GetValue(GameManager.Instance.TransportManager);
-            // if (temp_riding_texture != null){
-            //     ImageData temp_riding_texture_r = (ImageData) temp_riding_texture;
-            //     if (!temp_riding_texture_r.filename.Equals("")){
-            //         riding_texture = temp_riding_texture_r;
-            //         Debug.Log($"riding_texture set to: {riding_texture.filename}");
-            //     }
-                
-            // }
-            // try {
-            //     GameManager.Instance.TransportManager.GetType().GetField("ridingTexture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).SetValue(GameManager.Instance.TransportManager, null);
-            // }catch(Exception ex){
-            //     Debug.Log($"Failed to set ridingTexture to null with exception: {ex}");
-            // }
-        }
         private void LateUpdate(){
             if (!GameManager.Instance.StateManager.GameInProgress || GameManager.IsGamePaused){
                 return;
@@ -344,6 +245,7 @@ namespace BetterRidingViewMod
                 }
             }
             // * Roleplay and Realism Compatibility:
+            // TODO: Should probably do a PR for the mod that will allow me to overwrite it's OnGUI() function? Maybe with a messageReceiver that takes in a callback?
             if (roleplay_and_realism != null){
                 if (GameManager.Instance.TransportManager.RidingTexture.texture != null){
                     riding_texture = GameManager.Instance.TransportManager.RidingTexture;
