@@ -17,6 +17,7 @@ using __ExternalAssets;
 using System.Runtime.InteropServices.WindowsRuntime;
 using DaggerfallWorkshop.Game.Serialization;
 using DaggerfallConnect.Utility;
+using static DaggerfallWorkshop.Game.PlayerEnterExit;
 
 namespace BetterRidingViewMod
 {
@@ -67,7 +68,7 @@ namespace BetterRidingViewMod
         readonly float nativeScreenHeight = 200;
 
         [Invoke(StateManager.StateTypes.Start, 0)]
-        public static void Init(InitParams initParams){            
+        public static void Init(InitParams initParams){
             mod = initParams.Mod;
             var go = new GameObject(mod.Title);
             go.AddComponent<BetterRidingView>();
@@ -103,15 +104,23 @@ namespace BetterRidingViewMod
             previous_on_foot = GameManager.Instance.TransportManager.IsOnFoot;
             gameObjectPlayerAdvanced = GameObject.Find("PlayerAdvanced");
             StreamingWorld.OnTeleportToCoordinates += Teleported;
+            PlayerEnterExit.OnTransitionExterior += ExteriorTransition;
         }
         private void Teleported(DFPosition worldPos){
-            if (horizontal_lerp_strength >= 1){ return; }
-            if (!GameManager.Instance.TransportManager.IsOnFoot){
-                enable_horse_horizontal_positioning = false; // * disables horizontal positioning for a second.
-                Invoke(nameof(EnableHorizontalPositioning), 0.5f); // * If there is a event for after player is fully telported (rotated), use that instead.
-                previous_camera_y_angle = gameObjectPlayerAdvanced.transform.eulerAngles.y;
-                horse_horizontal_position = horse_horizontal_position_target;
-            }
+            // * If teleported triggered AFTER camera rotation, then can just to like ExteriorTransition() function instead.
+            HorseWhipFix();
+        }
+        private void ExteriorTransition(TransitionEventArgs args){
+            // * This is needed to be compatible with RememberTransportMode Mod, but it might be good to have regardless.
+            previous_camera_y_angle = gameObjectPlayerAdvanced.transform.eulerAngles.y;
+            horse_horizontal_position = horse_horizontal_position_target;
+        }
+        private void HorseWhipFix(){
+            if (horizontal_lerp_strength >= 1 || GameManager.Instance.TransportManager.IsOnFoot){ return; }
+            enable_horse_horizontal_positioning = false; // * disables horizontal positioning for a second.
+            Invoke(nameof(EnableHorizontalPositioning), 0.5f); // * If there is a event for after player is fully telported (rotated), use that instead.
+            previous_camera_y_angle = gameObjectPlayerAdvanced.transform.eulerAngles.y;
+            horse_horizontal_position = horse_horizontal_position_target;
         }
         private void EnableHorizontalPositioning(){
             enable_horse_horizontal_positioning = true;
