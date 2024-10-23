@@ -62,12 +62,16 @@ namespace BetterRidingViewMod
         public static bool better_riding_view_draw_horse = true;
         // * Eye of the Beholder Compatbility:
         // ModManager.Instance.GetModFromGUID("2942ea8c-dbd4-42af-bdf9-8199d2f4a0aa");
+        static bool eye_of_the_beholder_compatibility = false;
         Component eye_of_the_beholder_component;
         bool eye_of_the_beholder_current_offset;
         bool eye_of_the_beholder_previous_offset;
         FieldInfo eye_of_the_beholder_offset;
         GameObject eye_of_the_beholder;
         // * Roleplay and Realism Compatibility:
+        readonly Mod roleplay_realism_mod = ModManager.Instance.GetModFromGUID("d828b782-46e9-40e7-8ae6-19cde308032e");
+        static bool roleplay_realism_compatibility = false;
+        static bool rr_enhanced_riding_module_enabled = false;
         GameObject roleplay_and_realism;
         public ImageData riding_texture;
 ////////////////////////////////////////////////////////////////////////////////
@@ -107,6 +111,9 @@ namespace BetterRidingViewMod
             if (horizontal_lerp_strength < 1){
                 horse_horizontal_position = horse_horizontal_position_target;
             }
+            // * Mod Compatibility:
+            eye_of_the_beholder_compatibility = modSettings.GetBool("Compatibility", "EyeOfTheBeholder");
+            roleplay_realism_compatibility = modSettings.GetBool("Compatibility", "RoleplayAndRealism");
         }
 
         private static void MessageReceiver(string message, object data, DFModMessageCallback callBack){
@@ -143,8 +150,12 @@ namespace BetterRidingViewMod
             }
 
             // * Roleplay and Realism Compatibility:
-            roleplay_and_realism = GameObject.Find("RoleplayRealism");
             riding_texture = GameManager.Instance.TransportManager.RidingTexture;
+            roleplay_and_realism = GameObject.Find("RoleplayRealism");
+            if (roleplay_and_realism != null){
+                // roleplay_realism_mod.LoadSettingsCallback += RRLoadSettings; // ! Roleplay and Realism requires restarting if player wants to disable enhanced riding so listening for changes during runtime is useless..
+                rr_enhanced_riding_module_enabled = roleplay_realism_mod.GetSettings().GetBool("EnhancedRiding", "enhancedRiding");
+            }
         }
         private void Teleported(DFPosition worldPos){
             // * If teleported triggered AFTER camera rotation, then can just to like ExteriorTransition() function instead.
@@ -236,26 +247,38 @@ namespace BetterRidingViewMod
             }
             // * Eye of the Beholder Compatibility: 
             // TODO: If can listen for an event from the mod, that would be better than this.
-            if (eye_of_the_beholder != null){
-                if ((bool) eye_of_the_beholder_offset.GetValue(eye_of_the_beholder_component)){
-                    better_riding_view_draw_horse = false;
-                }else{
+            // Tests: Disable compatibility on my mod: should stop compatibility code. Can be done during runtime.
+            // Tests: If don't have eye of the beholder running, should do nothing.
+            if (!GameManager.Instance.TransportManager.IsOnFoot){
+                if (eye_of_the_beholder_compatibility && eye_of_the_beholder != null){
+                    Debug.Log($"eye_of_the_beholder_compatibility");
+                    if ((bool) eye_of_the_beholder_offset.GetValue(eye_of_the_beholder_component)){
+                        better_riding_view_draw_horse = false;
+                    }else{
+                        better_riding_view_draw_horse = true;
+                        GameManager.Instance.TransportManager.DrawHorse = false;
+                    }
+                }else if (!eye_of_the_beholder_compatibility && eye_of_the_beholder != null){
+                    // * If turned off comptaibility in offset mode, re-anble drawing horse.
                     better_riding_view_draw_horse = true;
-                    GameManager.Instance.TransportManager.DrawHorse = false;
                 }
             }
             // * Roleplay and Realism Compatibility:
             // TODO: Should probably do a PR for the mod that will allow me to overwrite it's OnGUI() function? Maybe with a messageReceiver that takes in a callback?
-            if (roleplay_and_realism != null){
-                if (GameManager.Instance.TransportManager.RidingTexture.texture != null){
-                    riding_texture = GameManager.Instance.TransportManager.RidingTexture;
+            // Tests: Disable compatibility on my mod: should stop compatibility code. Can be done during runtime.
+            // Tests: Disabled RR enhanced riding on game start: should stop compatibility. If disable in runtime, should do nothing.
+            // Tests: Enabled RR enhanced riding on game start: should do compatibility. If disable in runtime, should do nothing.
+            // Tests: If don't have RR running, should do nothing.
+            if (!GameManager.Instance.TransportManager.IsOnFoot){
+                if (GameManager.Instance.TransportManager.RidingTexture.texture != null){ 
+                    riding_texture = GameManager.Instance.TransportManager.RidingTexture; // ! This is needed now for supporting R&R as RidingTexture will be set to null and I must copy it for THIS mod.
                 }
-                try {
+                if (roleplay_realism_compatibility && roleplay_and_realism != null && rr_enhanced_riding_module_enabled){
+                    // Debug.Log($"roleplay_realism_compatibility");
                     GameManager.Instance.TransportManager.GetType().GetField("ridingTexture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).SetValue(GameManager.Instance.TransportManager, null);
-                }catch(Exception ex){
-                    Debug.Log($"Failed to set ridingTexture to null with exception: {ex}");
                 }
             }
+
             // * If On Horse:
             if (previous_on_foot && !GameManager.Instance.TransportManager.IsOnFoot){
                 EnteredRiding();

@@ -190,6 +190,28 @@
                 }
             ],
             "$version": "v1"
+        },
+        {
+            "Name": "Compatibility",
+            "Description": "Compatibility with other mods",
+            "IsAdvanced": true,
+            "Keys": [
+                {
+                    "Value": true,
+                    "Name": "EyeOfTheBeholder",
+                    "Description": "Disables horse when you go into third person. If you don't have the mod, this will do nothing.",
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.ToggleKey"
+                },
+                {
+                    "Value": true,
+                    "Name": "RoleplayAndRealism",
+                    "Description": "Disables Roleplay& Realism's horse texture. If you don't have the mod, or its \"Enhanced Riding\" module is disabled ON GAME START, this will do nothing.",
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.ToggleKey"
+                }
+            ],
+            "$version": "v1"
         }
     ]
 }
