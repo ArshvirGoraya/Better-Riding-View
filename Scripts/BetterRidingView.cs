@@ -251,7 +251,7 @@ namespace BetterRidingViewMod
             // Tests: If don't have eye of the beholder running, should do nothing.
             if (!GameManager.Instance.TransportManager.IsOnFoot){
                 if (eye_of_the_beholder_compatibility && eye_of_the_beholder != null){
-                    Debug.Log($"eye_of_the_beholder_compatibility");
+                    // Debug.Log($"eye_of_the_beholder_compatibility");
                     if ((bool) eye_of_the_beholder_offset.GetValue(eye_of_the_beholder_component)){
                         better_riding_view_draw_horse = false;
                     }else{
