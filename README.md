@@ -27,6 +27,8 @@ Here is a video example: https://youtu.be/h-fvnxjHpEY
 - Follow the guide on the Nexus Mod Page: https://www.nexusmods.com/daggerfallunity/mods/791
 
 ## Donate
-<a align="left" href='https://ko-fi.com/Z8Z6NP272' target='_blank'><img height='36' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' alt='Buy Me a Coffee at ko-fi.com' /></a>
-<a href='https://www.paypal.com/donate/?hosted_button_id=6898PNAVV5QRC' target='_blank'><img width='108' src='https://github.com/user-attachments/assets/0b96763f-b586-4abb-9d42-216aab7ccb20' alt='Donate at paypal.com' /></a>
-<a href='https://github.com/sponsors/ArshvirGoraya' target='_blank'><img height='30' src='https://github.com/user-attachments/assets/0e5debd6-531b-463a-a67a-e55e85102ddc'/></a>
+<p align="center">
+  <a href='https://ko-fi.com/Z8Z6NP272' target='_blank'><img width='30%' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' alt='Buy Me a Coffee at ko-fi.com' /></a>
+  <a href='https://www.paypal.com/donate/?hosted_button_id=6898PNAVV5QRC' target='_blank'><img width='30%' src='https://github.com/user-attachments/assets/0b96763f-b586-4abb-9d42-216aab7ccb20' alt='Donate at paypal.com' /></a>
+  <a href='https://github.com/sponsors/ArshvirGoraya' target='_blank'><img width='30%' src='https://github.com/user-attachments/assets/0e5debd6-531b-463a-a67a-e55e85102ddc'/></a>
+</p>
